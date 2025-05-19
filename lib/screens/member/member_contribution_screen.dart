@@ -5,7 +5,6 @@ import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/services/contribution_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:heavens_connect/utils/app_dialog.dart';
-
 import '../../utils/app_theme.dart';
 
 class MemberContributionScreen extends StatefulWidget {
@@ -27,6 +26,20 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
   int selectedYear = DateTime.now().year;
 
   File? proofOfPayment;
+  String? bankDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      bankDetails = settings['bank_account']?.join('\n') ?? '';
+    });
+  }
 
   Future<void> pickProofOfPayment() async {
     final picker = ImagePicker();
@@ -83,9 +96,7 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
   void _showHelpModal() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -103,13 +114,8 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
                   TextSpan(text: 'cash payments', style: const TextStyle(fontWeight: FontWeight.bold)),
                   const TextSpan(text: ', kindly hand over to the admin who will record it for you.\n\n'),
                   const TextSpan(text: '• Ensure you have transferred the amount to:\n\n'),
-                  TextSpan(text: 'Account Name: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const TextSpan(text: 'Opened Heavens Chapel\n'),
-                  TextSpan(text: 'Sort Code: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const TextSpan(text: '30-94-44\n'),
-                  TextSpan(text: 'Account Number: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const TextSpan(text: '51659968\n\n'),
-                  const TextSpan(text: '• Fill this form with your transaction details and upload proof of payment.'),
+                  TextSpan(text: bankDetails ?? 'Bank account not found\n', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const TextSpan(text: '\n• Fill this form with your transaction details and upload proof of payment.'),
                 ],
               ),
               textAlign: TextAlign.center,

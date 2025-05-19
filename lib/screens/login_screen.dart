@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 scale: _fadeAnimation,
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.volunteer_activism,
                       color: Colors.white,
                       size: 80,

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
+import '../../utils/setting_keys.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen({super.key});
@@ -19,10 +21,34 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
+  Map<String, List<String>> systemSettings = {};
+  List<String> statusOptions = [];
+  bool settingsLoading = true;
+
+
   String status = 'active';
   File? _profileImage;
 
   final Color themeColor = Colors.deepPurple;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await AuthService().getSystemSettings();  // already flat map
+
+    setState(() {
+      systemSettings = Map<String, List<String>>.from(settings);
+      statusOptions = systemSettings[SettingKeys.memberStatuses] ?? ['active', 'inactive', 'deceased'];
+      settingsLoading = false;
+    });
+  }
+
+
+
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -106,13 +132,19 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   }
 
   Widget _buildDropdownField() {
+    if (settingsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return DropdownButtonFormField<String>(
-      value: status,
-      items: const [
-        DropdownMenuItem(value: 'active', child: Text('Active')),
-        DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
-        DropdownMenuItem(value: 'deceased', child: Text('Deceased')),
-      ],
+      value: statusOptions.contains(status) ? status : statusOptions.first,
+      items: statusOptions
+          .map((option) => DropdownMenuItem(
+        value: option,
+        child: Text(option.isNotEmpty ? '${option[0].toUpperCase()}${option.substring(1)}' : ''),
+      ))
+          .toList(),
+
       onChanged: (value) => setState(() => status = value!),
       decoration: InputDecoration(
         labelText: 'Status',
@@ -121,6 +153,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       ),
     );
   }
+
 
   Widget _buildProfileImagePicker() {
     return Stack(
@@ -156,4 +189,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       child: Text('Submit', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
     );
   }
+
+
 }

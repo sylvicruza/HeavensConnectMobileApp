@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/contribution_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/admin_bottom_nav.dart';
@@ -17,6 +18,10 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
   final AuthService _authService = AuthService();
   List<dynamic> contributions = [];
   bool isLoading = true;
+  bool settingsLoading = true;
+
+  List<String> statusOptions = ['all'];
+  List<String> paymentMethodOptions = ['all'];
 
   String selectedStatus = 'all';
   String selectedPaymentMethod = 'all';
@@ -33,12 +38,21 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
     super.initState();
     selectedMonth = DateTime.now().month;
     selectedYear = DateTime.now().year;
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      statusOptions = ['all', ...(settings[SettingKeys.contributionStatuses] ?? ['pending', 'verified', 'rejected'])];
+      paymentMethodOptions = ['all', ...(settings[SettingKeys.paymentMethods] ?? ['cash', 'transfer'])];
+      settingsLoading = false;
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (!_initialized) {
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null && args['status'] != null) {
@@ -81,7 +95,9 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
       builder: (_) {
         return Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: settingsLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
@@ -95,9 +111,9 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
               const SizedBox(height: 12),
               Text('Filter Contributions', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildDropdown(['all', 'pending', 'verified', 'rejected'], selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
+              _buildDropdown(statusOptions, selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
               const SizedBox(height: 12),
-              _buildDropdown(['all', 'cash', 'transfer'], selectedPaymentMethod, (value) => setState(() => selectedPaymentMethod = value), 'Payment Method'),
+              _buildDropdown(paymentMethodOptions, selectedPaymentMethod, (value) => setState(() => selectedPaymentMethod = value), 'Payment Method'),
               const SizedBox(height: 12),
               Row(
                 children: [

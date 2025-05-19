@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/admin_bottom_nav.dart';
@@ -14,30 +15,52 @@ class AdminWelfareRequestListScreen extends StatefulWidget {
 
 class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListScreen> {
   final AuthService _authService = AuthService();
+  final Color themeColor = AppTheme.themeColor;
+
   List<dynamic> welfareRequests = [];
   bool isLoading = true;
+  bool settingsLoading = true;
+
+  Map<String, List<String>> systemSettings = {};
+  List<String> statusOptions = [];
+  List<String> categoryOptions = [];
 
   String selectedStatus = 'all';
   String selectedCategory = 'all';
   String searchQuery = '';
 
   Timer? _debounce;
-  final Color themeColor = AppTheme.themeColor;
 
   @override
   void initState() {
     super.initState();
 
-    // Check for initial filters passed as arguments
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null && args.containsKey('status')) {
-        setState(() {
-          selectedStatus = args['status'] ?? 'all';
-        });
+        selectedStatus = args['status'] ?? 'all';
       }
-      fetchRequests();
+      _loadSystemSettings();
     });
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+
+    final statuses = settings[SettingKeys.welfareStatuses] ?? ['pending', 'approved', 'declined', 'paid'];
+    final categories = settings[SettingKeys.categories] ?? [
+      'school_fees', 'marriage', 'funeral', 'job_loss', 'medical',
+      'baby_dedication', 'food', 'rent', 'others'
+    ];
+
+    setState(() {
+      systemSettings = settings;
+      statusOptions = ['all', ...statuses];
+      categoryOptions = ['all', ...categories];
+      settingsLoading = false;
+    });
+
+    fetchRequests();
   }
 
   Future<void> fetchRequests() async {
@@ -77,25 +100,24 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
               const SizedBox(height: 12),
               Text('Filter Welfare Requests', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildDropdown(['all', 'pending', 'approved', 'declined', 'paid'], selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
+              _buildDropdown(statusOptions, selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
               const SizedBox(height: 12),
-              _buildDropdown([
-                'all', 'school_fees', 'marriage', 'funeral', 'job_loss', 'medical',
-                'baby_dedication', 'food', 'rent', 'others'
-              ], selectedCategory, (value) => setState(() => selectedCategory = value), 'Category'),
+              _buildDropdown(categoryOptions, selectedCategory, (value) => setState(() => selectedCategory = value), 'Category'),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  fetchRequests();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: themeColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    fetchRequests();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeColor,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
-
-                child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ],
           ),
@@ -121,13 +143,13 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
         title: Text('Welfare Requests', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
         actions: [
           TextButton.icon(
-            onPressed: _showFilterSheet,
+            onPressed: settingsLoading ? null : _showFilterSheet,
             icon: const Icon(Icons.filter_list),
             label: Text('Filter', style: GoogleFonts.montserrat(color: themeColor)),
           ),
         ],
       ),
-      body: isLoading
+      body: isLoading || settingsLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
         children: [

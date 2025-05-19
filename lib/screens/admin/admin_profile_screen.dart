@@ -4,6 +4,7 @@ import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
 import '../../utils/app_theme.dart';
 import '../change_password_screen.dart';
+import 'admin_display_settings.dart';
 import 'edit_admin_profile_screen.dart';
 
 class AdminProfileScreen extends StatefulWidget {
@@ -141,7 +142,13 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       child: ListView(
         children: [
           const SizedBox(height: 10),
-          _settingsSection('App Security', [
+          _settingsSection('App Setup', [
+            _settingsItem(Icons.display_settings, 'Display Settings', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AdminSettingsScreen()),
+              );
+            }),
             _settingsItem(Icons.lock_reset, 'Reset your password', () {
               Navigator.push(
                 context,
@@ -150,10 +157,8 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
             }),
             _settingsItem(Icons.timer, 'Auto logoff', () {
               _logout();
-            }),
-            _settingsItem(Icons.refresh, 'Reset mobile app', () {
-              _resetApp();
-            }),
+            })
+
           ]),
           const SizedBox(height: 20),
           _settingsSection('Preferences', [

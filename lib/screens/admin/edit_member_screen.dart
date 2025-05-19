@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
+import '../../utils/setting_keys.dart';
 
 class EditMemberScreen extends StatefulWidget {
   final Map<String, dynamic> member;
@@ -15,11 +16,15 @@ class EditMemberScreen extends StatefulWidget {
 class _EditMemberScreenState extends State<EditMemberScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
+
   late TextEditingController _fullNameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+
   String? _status;
+  List<String> statusOptions = [];
+  bool settingsLoading = true;
 
   @override
   void initState() {
@@ -29,6 +34,15 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
     _phoneController = TextEditingController(text: widget.member['phone_number']);
     _addressController = TextEditingController(text: widget.member['address']);
     _status = widget.member['status'];
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      statusOptions = settings[SettingKeys.memberStatuses] ?? ['active', 'inactive'];
+      settingsLoading = false;
+    });
   }
 
   Future<void> _saveChanges() async {
@@ -112,13 +126,18 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
   }
 
   Widget _buildStatusDropdown() {
+    if (settingsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return DropdownButtonFormField<String>(
-      value: _status,
-      items: const [
-        DropdownMenuItem(value: 'active', child: Text('Active')),
-        DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
-        DropdownMenuItem(value: 'deceased', child: Text('Deceased')),
-      ],
+      value: statusOptions.contains(_status) ? _status : statusOptions.first,
+      items: statusOptions
+          .map((status) => DropdownMenuItem(
+        value: status,
+        child: Text(status.isNotEmpty ? '${status[0].toUpperCase()}${status.substring(1)}' : ''),
+      ))
+          .toList(),
       onChanged: (value) => setState(() => _status = value),
       decoration: InputDecoration(
         labelText: 'Status',

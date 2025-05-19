@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/services/contribution_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import 'package:heavens_connect/widgets/member_bottom_nav.dart';
 
 import '../../utils/app_theme.dart';
@@ -17,19 +18,35 @@ class MemberContributionListScreen extends StatefulWidget {
 
 class _MemberContributionListScreenState extends State<MemberContributionListScreen> {
   final AuthService _authService = AuthService();
+  final Color themeColor = AppTheme.themeColor;
+
   List<dynamic> contributions = [];
-  bool isLoading = true;
+  List<String> statusOptions = ['all'];
+  List<String> paymentMethods = ['all'];
 
   String selectedStatus = 'all';
   String selectedPaymentMethod = 'all';
   int? selectedMonth;
   int? selectedYear;
 
-  final Color themeColor = AppTheme.themeColor;
+  bool isLoading = true;
+  bool settingsLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    loadSettingsAndFetchContributions();
+  }
+
+  Future<void> loadSettingsAndFetchContributions() async {
+    final settings = await _authService.getSystemSettings();
+
+    setState(() {
+      statusOptions = ['all', ...(settings[SettingKeys.contributionStatuses] ?? ['pending', 'verified', 'rejected'])];
+      paymentMethods = ['all', ...(settings[SettingKeys.paymentMethods] ?? ['cash', 'transfer'])];
+      settingsLoaded = true;
+    });
+
     fetchContributions();
   }
 
@@ -61,7 +78,8 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) {
-        return Padding(
+        return settingsLoaded
+            ? Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -70,9 +88,9 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
               const SizedBox(height: 12),
               Text('Filter Contributions', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildDropdown(['all', 'pending', 'verified', 'rejected'], tempStatus, (value) => tempStatus = value!, 'Status'),
+              _buildDropdown(statusOptions, tempStatus, (value) => tempStatus = value!, 'Status'),
               const SizedBox(height: 12),
-              _buildDropdown(['all', 'cash', 'transfer'], tempPaymentMethod, (value) => tempPaymentMethod = value!, 'Payment Method'),
+              _buildDropdown(paymentMethods, tempPaymentMethod, (value) => tempPaymentMethod = value!, 'Payment Method'),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -85,26 +103,30 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedStatus = tempStatus;
-                    selectedPaymentMethod = tempPaymentMethod;
-                    selectedMonth = tempMonth;
-                    selectedYear = tempYear;
-                  });
-                  Navigator.pop(context);
-                  fetchContributions();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: themeColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  onPressed: () {
+                    setState(() {
+                      selectedStatus = tempStatus;
+                      selectedPaymentMethod = tempPaymentMethod;
+                      selectedMonth = tempMonth;
+                      selectedYear = tempYear;
+                    });
+                    Navigator.pop(context);
+                    fetchContributions();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeColor,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
-                child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
-              ),
               )
             ],
           ),
+        )
+            : const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator()),
         );
       },
     );
@@ -148,7 +170,6 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
         },
       ),
       bottomNavigationBar: MemberBottomNavBar(selectedIndex: 1),
-
     );
   }
 
@@ -229,7 +250,7 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
       child: ListTile(
-        title: Text('$amount - $month $year', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text('£$amount - $month $year', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
         subtitle: Text('Payment: ${capitalize(paymentMethod)}', style: GoogleFonts.montserrat()),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -247,7 +268,6 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
       ),
     );
   }
-
 }
 
 String capitalize(String text) => text.isNotEmpty ? '${text[0].toUpperCase()}${text.substring(1)}' : '';

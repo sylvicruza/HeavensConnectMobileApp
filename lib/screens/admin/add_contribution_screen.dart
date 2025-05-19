@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/contribution_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import '../../services/auth_service.dart';
@@ -32,10 +33,29 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
   File? proofOfPayment;
   final Color themeColor = AppTheme.themeColor;
 
+  Map<String, List<String>> systemSettings = {};
+  List<String> paymentMethods = [];
+  bool settingsLoading = true;
+
   @override
   void initState() {
     super.initState();
     fetchMembers();
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    final methods = settings[SettingKeys.paymentMethods] ?? ['cash', 'transfer'];
+
+    setState(() {
+      systemSettings = settings;
+      paymentMethods = methods;
+      if (!paymentMethods.contains(paymentMethod)) {
+        paymentMethod = paymentMethods.first;
+      }
+      settingsLoading = false;
+    });
   }
 
   Future<void> fetchMembers() async {
@@ -221,18 +241,22 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
   }
 
   Widget _buildPaymentMethodDropdown() {
+    if (settingsLoading) return const Center(child: CircularProgressIndicator());
+
     return DropdownButtonFormField<String>(
       value: paymentMethod,
-      items: [
-        DropdownMenuItem(
-          value: 'cash',
-          child: Row(children: [const Icon(Icons.attach_money), const SizedBox(width: 8), const Text('Cash')]),
+      items: paymentMethods
+          .map((method) => DropdownMenuItem(
+        value: method,
+        child: Row(
+          children: [
+            Icon(method == 'cash' ? Icons.attach_money : Icons.swap_horiz),
+            const SizedBox(width: 8),
+            Text(method.capitalize()),
+          ],
         ),
-        DropdownMenuItem(
-          value: 'transfer',
-          child: Row(children: [const Icon(Icons.swap_horiz), const SizedBox(width: 8), const Text('Transfer')]),
-        ),
-      ],
+      ))
+          .toList(),
       onChanged: (value) => setState(() => paymentMethod = value!),
       decoration: const InputDecoration(border: InputBorder.none),
     );
@@ -241,7 +265,8 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
   Widget _buildMonthDropdown() {
     return DropdownButtonFormField<int>(
       value: selectedMonth,
-      items: List.generate(12, (index) => DropdownMenuItem(value: index + 1, child: FittedBox(child: Text(monthName(index + 1))))),
+      items: List.generate(12, (index) =>
+          DropdownMenuItem(value: index + 1, child: FittedBox(child: Text(monthName(index + 1))))),
       onChanged: (value) => setState(() => selectedMonth = value!),
       decoration: const InputDecoration(border: InputBorder.none),
     );

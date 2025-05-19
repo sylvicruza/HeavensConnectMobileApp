@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/utils/app_dialog.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import '../../utils/app_theme.dart';
 
 class AddDisbursementScreen extends StatefulWidget {
@@ -31,12 +32,28 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
   List<dynamic> approvedRequests = [];
   List<dynamic> members = [];
 
+  Map<String, List<String>> systemSettings = {};
+  List<String> categories = [];
+  List<String> paymentMethods = [];
+  bool settingsLoading = true;
+
   final Color themeColor = AppTheme.themeColor;
 
   @override
   void initState() {
     super.initState();
     loadInitialData();
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      systemSettings = settings;
+      categories = settings[SettingKeys.categories] ?? [];
+      paymentMethods = settings[SettingKeys.paymentMethods] ?? [];
+      settingsLoading = false;
+    });
   }
 
   Future<void> loadInitialData() async {
@@ -60,8 +77,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
       recipientPhoneController.text = '';
     });
   }
-
-
 
   Future<void> pickAttachment() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.any);
@@ -176,34 +191,39 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
               _sectionTitle("Disbursement Details"),
               _buildCard(Column(
                 children: [
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: category,
-                    items: [
-                      'school_fees', 'marriage', 'funeral', 'job_loss',
-                      'medical', 'baby_dedication', 'food', 'rent', 'others'
-                    ].map((c) => DropdownMenuItem(
-                        value: c,
-                        child: Text(c.replaceAll('_', ' ').toUpperCase())
+                    items: settingsLoading
+                        ? []
+                        : categories.map((c) => DropdownMenuItem<String>(
+                      value: c,
+                      child: Text(c.replaceAll('_', ' ').toUpperCase()),
                     )).toList(),
-                    onChanged: selectedRequestId == null ? (val) => setState(() => category = val as String?) : null,
+                    onChanged: selectedRequestId == null
+                        ? (val) => setState(() => category = val)
+                        : null,
                     decoration: _inputDecoration('Category'),
                     validator: (val) => val == null ? 'Select a category' : null,
                   ),
+
                   const SizedBox(height: 12),
                   _buildTextField(amountController, 'Amount (£)', required: true, type: TextInputType.number),
                   const SizedBox(height: 12),
                   _buildTextField(descriptionController, 'Description', maxLines: 3),
                   const SizedBox(height: 12),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<String>(
                     value: paymentMethod,
-                    items: ['cash', 'transfer'].map((p) {
-                      return DropdownMenuItem(
-                          value: p, child: Text(p.toUpperCase()));
-                    }).toList(),
+                    items: settingsLoading
+                        ? []
+                        : paymentMethods.map((p) => DropdownMenuItem<String>(
+                      value: p,
+                      child: Text(p.toUpperCase()),
+                    )).toList(),
                     onChanged: (val) => setState(() => paymentMethod = val),
                     decoration: _inputDecoration('Payment Method'),
                     validator: (val) => val == null ? 'Select payment method' : null,
                   ),
+
                 ],
               )),
 
@@ -212,8 +232,8 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: pickAttachment,
-                    icon: const Icon(Icons.attach_file, color: Colors.white38,),
-                    label: const Text('Attach Receipt'),
+                    icon: const Icon(Icons.attach_file, color: Colors.white38),
+                    label: const Text('Attach Receipt', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: themeColor.withOpacity(0.8)),
                   ),
@@ -231,7 +251,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
 
               const SizedBox(height: 24),
               _buildSubmitButton(),
-
             ],
           ),
         ),
@@ -239,7 +258,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     );
   }
 
-  /// Section Title Widget
   Widget _sectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 8),
@@ -254,7 +272,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     );
   }
 
-  /// Card Wrapper
   Widget _buildCard(Widget child) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -267,7 +284,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     );
   }
 
-  /// Input Decoration
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
@@ -278,7 +294,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     );
   }
 
-  /// Text Field Builder
   Widget _buildTextField(TextEditingController controller, String label,
       {bool required = false, TextInputType? type, int? maxLines}) {
     return TextFormField(
@@ -290,7 +305,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     );
   }
 
-  /// Summary Card
   Widget _buildSummaryCard() {
     final recipient = selectedMemberId != null
         ? members.firstWhere(
@@ -323,7 +337,6 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
     ));
   }
 
-  /// Submit Button with Gradient
   Widget _buildSubmitButton() {
     return SizedBox(
       width: double.infinity,

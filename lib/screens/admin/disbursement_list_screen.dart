@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 
 import '../../utils/app_theme.dart';
 import '../../widgets/admin_bottom_nav.dart';
@@ -15,19 +16,35 @@ class AdminDisbursementListScreen extends StatefulWidget {
 
 class _AdminDisbursementListScreenState extends State<AdminDisbursementListScreen> {
   final AuthService _authService = AuthService();
+  final Color themeColor = AppTheme.themeColor;
+
   List<dynamic> disbursements = [];
-  bool isLoading = true;
+  List<String> paymentMethods = ['all'];
+  List<String> categories = ['all'];
 
   String selectedPaymentMethod = 'all';
   String selectedCategory = 'all';
   String searchQuery = '';
   Timer? _debounce;
 
-  final Color themeColor = AppTheme.themeColor;
+  bool isLoading = true;
+  bool settingsLoading = true;
 
   @override
   void initState() {
     super.initState();
+    loadSettingsAndFetchDisbursements();
+  }
+
+  Future<void> loadSettingsAndFetchDisbursements() async {
+    final settings = await _authService.getSystemSettings();
+
+    setState(() {
+      paymentMethods = ['all', ...(settings[SettingKeys.paymentMethods] ?? ['cash', 'transfer'])];
+      categories = ['all', ...(settings[SettingKeys.categories] ?? ['school_fees', 'marriage', 'funeral', 'others'])];
+      settingsLoading = false;
+    });
+
     fetchDisbursements();
   }
 
@@ -58,20 +75,22 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: settingsLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 12),
             Text('Filter Disbursements', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildDropdown(['all', 'cash', 'transfer'], selectedPaymentMethod, (val) => setState(() => selectedPaymentMethod = val), 'Payment Method'),
+            _buildDropdown(paymentMethods, selectedPaymentMethod, (val) => setState(() => selectedPaymentMethod = val), 'Payment Method'),
             const SizedBox(height: 12),
-            _buildDropdown([
-              'all', 'school_fees', 'marriage', 'funeral', 'job_loss', 'medical', 'baby_dedication', 'food', 'rent', 'others'
-            ], selectedCategory, (val) => setState(() => selectedCategory = val), 'Category'),
+            _buildDropdown(categories, selectedCategory, (val) => setState(() => selectedCategory = val), 'Category'),
             const SizedBox(height: 20),
-            ElevatedButton(
+            SizedBox(
+              width: double.infinity,
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
                 fetchDisbursements();
@@ -81,7 +100,9 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
+
               child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
             ),
           ],
         ),
@@ -92,7 +113,7 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
   Widget _buildDropdown(List<String> options, String selected, ValueChanged<String> onChanged, String label) {
     return DropdownButtonFormField<String>(
       value: selected,
-      items: options.map((e) => DropdownMenuItem(value: e, child: Text(capitalize(e)))).toList(),
+      items: options.map((e) => DropdownMenuItem(value: e, child: Text(capitalize(e.replaceAll('_', ' '))))).toList(),
       onChanged: (val) => val != null ? onChanged(val) : null,
       decoration: InputDecoration(
         labelText: label,
@@ -159,7 +180,7 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
         backgroundColor: themeColor,
         onPressed: () {
           Navigator.pushNamed(context, '/addDisbursement').then((value) {
-            if (value == true) fetchDisbursements(); // Refresh after adding
+            if (value == true) fetchDisbursements();
           });
         },
         child: const Icon(Icons.add),
@@ -167,5 +188,4 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
       bottomNavigationBar: const AdminBottomNavBar(),
     );
   }
-
 }

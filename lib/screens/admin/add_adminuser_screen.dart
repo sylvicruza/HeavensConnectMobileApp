@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import '../../utils/app_dialog.dart';
 import '../../utils/app_theme.dart';
 
@@ -18,10 +19,30 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
   String role = 'admin';
+  List<String> availableRoles = [];
+  bool settingsLoading = true;
+  bool isProcessing = false;
 
   final Color themeColor = AppTheme.themeColor;
-  bool isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSystemSettings();
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    final roles = settings[SettingKeys.adminRoles] ?? ['admin', 'finance'];
+
+    setState(() {
+      availableRoles = roles;
+      role = roles.first;
+      settingsLoading = false;
+    });
+  }
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -74,11 +95,16 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
           child: Column(
             children: [
               _buildCardField(
-                  _buildTextField(_fullNameController, 'Full Name', required: true)),
+                _buildTextField(_fullNameController, 'Full Name', required: true),
+              ),
               _buildCardField(
-                  _buildTextField(_emailController, 'Email', required: true, keyboardType: TextInputType.emailAddress)),
+                _buildTextField(_emailController, 'Email',
+                    required: true, keyboardType: TextInputType.emailAddress),
+              ),
               _buildCardField(
-                  _buildTextField(_phoneController, 'Phone Number', required: true, keyboardType: TextInputType.phone)),
+                _buildTextField(_phoneController, 'Phone Number',
+                    required: true, keyboardType: TextInputType.phone),
+              ),
               _buildCardField(_buildRoleDropdown()),
               const SizedBox(height: 30),
               _buildSubmitButton()
@@ -89,7 +115,6 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
     );
   }
 
-  // ---- BEAUTIFUL FIELD WRAPPER ----
   Widget _buildCardField(Widget child) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -102,10 +127,8 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
     );
   }
 
-  // ---- TEXT FIELD ----
   Widget _buildTextField(TextEditingController controller, String label,
-      {bool required = false,
-        TextInputType keyboardType = TextInputType.text}) {
+      {bool required = false, TextInputType keyboardType = TextInputType.text}) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -120,15 +143,21 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
     );
   }
 
-  // ---- DROPDOWN ----
   Widget _buildRoleDropdown() {
-    return DropdownButtonFormField(
-      value: role,
-      items: ['admin', 'finance']
+    if (settingsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return DropdownButtonFormField<String>(
+      value: availableRoles.contains(role) ? role : availableRoles.first,
+      items: availableRoles
           .map((r) => DropdownMenuItem(
-          value: r,
-          child: Text(r[0].toUpperCase() + r.substring(1),
-              style: GoogleFonts.montserrat())))
+        value: r,
+        child: Text(
+          r[0].toUpperCase() + r.substring(1),
+          style: GoogleFonts.montserrat(),
+        ),
+      ))
           .toList(),
       decoration: const InputDecoration(
           labelText: 'Role', border: InputBorder.none),
@@ -139,7 +168,6 @@ class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
     );
   }
 
-  // ---- BUTTON ----
   Widget _buildSubmitButton() {
     return ElevatedButton(
       onPressed: isProcessing ? null : _submit,

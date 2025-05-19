@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../screens/admin/admin_profile_screen.dart';
 import '../screens/notification_screen.dart';
 import '../services/auth_service.dart';
 import '../utils/app_dialog.dart';
@@ -55,7 +56,12 @@ class _AdminBottomNavBarState extends State<AdminBottomNavBar> {
   void _openAdminProfile() async {
     final profile = await _authService.getAdminProfile();
     if (profile != null) {
-      Navigator.pushNamed(context, '/adminProfile', arguments: profile);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdminProfileScreen(adminData: profile),
+        ),
+      );
     } else {
       AppDialog.showWarningDialog(
           context,

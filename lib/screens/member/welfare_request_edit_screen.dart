@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../utils/app_dialog.dart';
@@ -21,6 +22,7 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
+  List<String> categories = [];
   String selectedCategory = 'medical';
   File? attachment;
   bool isSubmitting = false;
@@ -31,6 +33,7 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
   void initState() {
     super.initState();
     _initializeFields();
+    _loadSystemSettings();
   }
 
   void _initializeFields() {
@@ -39,6 +42,23 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
     if (widget.request['amount_requested'] != null) {
       amountController.text = widget.request['amount_requested'].toString();
     }
+  }
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      categories = settings[SettingKeys.categories]?.cast<String>() ?? [
+        'school_fees',
+        'marriage',
+        'funeral',
+        'job_loss',
+        'medical',
+        'baby_dedication',
+        'food',
+        'rent',
+        'others'
+      ];
+    });
   }
 
   Future<void> pickAttachment() async {
@@ -119,23 +139,12 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
   }
 
   Widget _buildCategoryDropdown() {
-    final categories = {
-      'school_fees': 'School Fees',
-      'marriage': 'Marriage',
-      'funeral': 'Funeral',
-      'job_loss': 'Job Loss',
-      'medical': 'Medical',
-      'baby_dedication': 'Baby Dedication',
-      'food': 'Food',
-      'rent': 'House Rent',
-      'others': 'Others',
-    };
-
     return DropdownButtonFormField<String>(
       value: selectedCategory,
-      items: categories.entries
-          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, style: GoogleFonts.montserrat())))
-          .toList(),
+      items: categories.map((e) {
+        final label = e.replaceAll('_', ' ').toUpperCase();
+        return DropdownMenuItem(value: e, child: Text(label, style: GoogleFonts.montserrat()));
+      }).toList(),
       onChanged: (value) => setState(() => selectedCategory = value!),
       decoration: InputDecoration(
         labelText: 'Select Category',

@@ -7,8 +7,8 @@ import 'package:logger/logger.dart';
 
 class AuthService {
   final Logger logger = Logger();
-//  final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
-  final String baseUrl = 'https://heavensconnect.onrender.com';  // Use base URL
+  //final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
+ final String baseUrl = 'https://heavensconnect.onrender.com';  // Use base URL
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   /// Login
   Future<bool> login(String username, String password) async {
@@ -96,6 +96,8 @@ class AuthService {
       return false;
     }
   }
+
+
   /// Get Member Profile
   Future<Map<String, dynamic>?> getMemberProfile() async {
     final token = await getToken();
@@ -437,12 +439,16 @@ class AuthService {
   }
 
   Future<bool> forgotPassword(String identifier) async {
+    final frontendUrl = 'http://192.168.1.174:3000'; // or your dynamic source
+
     final response = await http.post(
-      Uri.parse('$baseUrl/api/forgot-password/'), // <-- Correct this endpoint
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$baseUrl/api/forgot-password/'),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Frontend-URL': frontendUrl,
+      },
       body: json.encode({'identifier': identifier}),
     );
-
 
     if (response.statusCode == 200) {
       return true;
@@ -451,6 +457,7 @@ class AuthService {
       return false;
     }
   }
+
 
   Future<bool> changePassword(String currentPassword, String newPassword) async {
     final token = await getToken();
@@ -1082,5 +1089,189 @@ class AuthService {
     return {};
   }
 
+  Future<Map<String, List<String>>> getSystemSettings() async {
+    final token = await getToken();
+    if (token == null) return {};
+
+    final uri = Uri.parse('$baseUrl/api/settings/');
+    final response = await http.get(uri, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      final List list = jsonDecode(response.body);
+      return {
+        for (var item in list)
+          item['key']: (item['value'] as String).split(',').map((e) => e.trim()).toList()
+      };
+    } else if (response.statusCode == 401) {
+      final refreshed = await refreshToken();
+      if (refreshed) return await getSystemSettings();
+    }
+
+    return {};
+  }
+
+
+  Future<bool> createSystemSetting(Map<String, dynamic> setting) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final uri = Uri.parse('$baseUrl/api/settings/');
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'key': setting['key'],
+        'value': (setting['value'] as String),
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    } else if (response.statusCode == 401) {
+      final refreshed = await refreshToken();
+      if (refreshed) return await createSystemSetting(setting);
+    }
+
+    return false;
+  }
+
+  Future<bool> updateSystemSetting(int id, Map<String, dynamic> setting) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final uri = Uri.parse('$baseUrl/api/settings/$id/');
+    final response = await http.patch(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'value': setting['value'], // assume it's already a String
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 401) {
+      final refreshed = await refreshToken();
+      if (refreshed) return await updateSystemSetting(id, setting);
+    }
+
+    return false;
+  }
+
+
+  Future<Map<String, dynamic>> getRawSystemSettings() async {
+    final token = await getToken();
+    if (token == null) return {};
+
+    final uri = Uri.parse('$baseUrl/api/settings/');
+    final response = await http.get(uri, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      final List list = jsonDecode(response.body);
+      final settings = <String, dynamic>{};
+      final meta = <String, dynamic>{};
+
+      for (var item in list) {
+        final key = item['key'];
+        settings[key] = (item['value'] as String).split(',').map((e) => e.trim()).toList();
+        meta[key] = {'id': item['id']};
+      }
+
+      return {
+        'settings': settings,
+        'meta': meta,
+      };
+    } else if (response.statusCode == 401) {
+      final refreshed = await refreshToken();
+      if (refreshed) return await getRawSystemSettings();
+    }
+
+    return {};
+  }
+
+  Future<http.Response?> authenticatedRequest(
+      String method,
+      String endpoint, {
+        Map<String, String>? headers,
+        dynamic body,
+        bool isJson = true,
+      }) async {
+    String? token = await getToken();
+    if (token == null) return null;
+
+    Uri uri = Uri.parse('$baseUrl$endpoint');
+    headers ??= {};
+    headers['Authorization'] = 'Bearer $token';
+    if (isJson) headers['Content-Type'] = 'application/json';
+
+    http.Response response;
+
+    try {
+      switch (method.toUpperCase()) {
+        case 'GET':
+          response = await http.get(uri, headers: headers);
+          break;
+        case 'POST':
+          response = await http.post(uri, headers: headers, body: json.encode(body));
+          break;
+        case 'PUT':
+          response = await http.put(uri, headers: headers, body: json.encode(body));
+          break;
+        case 'PATCH':
+          response = await http.patch(uri, headers: headers, body: json.encode(body));
+          break;
+        case 'DELETE':
+          response = await http.delete(uri, headers: headers);
+          break;
+        default:
+          throw Exception('Unsupported method: $method');
+      }
+
+      // Handle 401 - Try to refresh token and retry once
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          token = await getToken();
+          headers['Authorization'] = 'Bearer $token!';
+
+          switch (method.toUpperCase()) {
+            case 'GET':
+              response = await http.get(uri, headers: headers);
+              break;
+            case 'POST':
+              response = await http.post(uri, headers: headers, body: json.encode(body));
+              break;
+            case 'PUT':
+              response = await http.put(uri, headers: headers, body: json.encode(body));
+              break;
+            case 'PATCH':
+              response = await http.patch(uri, headers: headers, body: json.encode(body));
+              break;
+            case 'DELETE':
+              response = await http.delete(uri, headers: headers);
+              break;
+          }
+        } else {
+          await logout(); // Token invalid, logout
+          return null;
+        }
+      }
+
+      return response;
+    } catch (e) {
+      logger.e('Authenticated request error: $e');
+      return null;
+    }
+  }
 
 }
