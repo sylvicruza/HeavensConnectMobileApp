@@ -1,5 +1,5 @@
 name: heavens_connect
-description: "All-purpose name for connection, giving, updates, and welfare"
+description: "Heavens Connect – Welfare App"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -66,8 +66,12 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter_launcher_icons:
+  android: true
   ios: true
-  image_path: "images/heavensconnect_logo.png"
+  image_path: "images/app_icon.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "images/app_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
