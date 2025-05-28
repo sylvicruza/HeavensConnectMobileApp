@@ -5,6 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
+import '../utils/app_config.dart';
+
 class AuthService {
   final Logger logger = Logger();
   //final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
@@ -82,7 +84,7 @@ class AuthService {
     if (refreshToken == null) return false;
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.174:8085/api/token/refresh/'),
+      Uri.parse('$baseUrl/api/token/refresh/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'refresh': refreshToken}),
     );
@@ -439,7 +441,7 @@ class AuthService {
   }
 
   Future<bool> forgotPassword(String identifier) async {
-    final frontendUrl = 'http://192.168.1.174:3000'; // or your dynamic source
+    const frontendUrl = AppConfig.frontendUrl;
 
     final response = await http.post(
       Uri.parse('$baseUrl/api/forgot-password/'),
@@ -457,6 +459,7 @@ class AuthService {
       return false;
     }
   }
+
 
 
   Future<bool> changePassword(String currentPassword, String newPassword) async {
