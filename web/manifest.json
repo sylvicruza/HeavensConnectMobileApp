@@ -1,16 +1,16 @@
 {
-    "name": "heavens_connect",
+    "name": "Heavens Connect",
     "short_name": "heavens_connect",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "All-purpose name for connection, giving, updates, and welfare",
+    "description": "Stay informed, connected, and supported with Heavens Connect — your all-in-one platform for giving, updates, and welfare.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
+            "src": "icons/Icon-196.png",
             "sizes": "192x192",
             "type": "image/png"
         },
@@ -20,13 +20,13 @@
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-maskable-192.png",
+            "src": "icons/Icon-196.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "icons/Icon-maskable-512.png",
+            "src": "icons/Icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
