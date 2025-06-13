@@ -54,15 +54,14 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.release
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            minifyEnabled false
 
-            // ✅ Add this block:
             ndk {
                 debugSymbolLevel = 'FULL'
             }
         }
+
     }
 
 }

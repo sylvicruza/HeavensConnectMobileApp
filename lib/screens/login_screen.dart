@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/utils/app_dialog.dart';
 import '../utils/app_theme.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -117,14 +118,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 scale: _fadeAnimation,
                 child: Column(
                   children: [
-                    const Icon(
-                      Icons.volunteer_activism,
+                    SvgPicture.asset(
+                      'assets/icons/volunteer_heart_icon.svg',
                       color: Colors.white,
-                      size: 80,
+                      width: 85,
+                      height: 90,
                     ),
-                    const SizedBox(height: 10),
                     Text(
-                      'HeavensConnect',
+                      'Heavens Connect',
                       style: GoogleFonts.montserrat(
                         fontSize: 28,
                         color: Colors.white,
