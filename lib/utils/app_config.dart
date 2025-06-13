@@ -1,6 +1,3 @@
 class AppConfig {
-  static const String frontendUrl = String.fromEnvironment(
-    'FRONTEND_URL',
-    defaultValue: 'https://heavensconnect.com',  // fallback prod domain
-  );
+  static const String frontendUrl = 'https://heavensconnect-83e8c.firebaseapp.com'; // Your deployed Flutter web/app base URL
 }

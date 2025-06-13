@@ -9,7 +9,7 @@ import '../utils/app_config.dart';
 
 class AuthService {
   final Logger logger = Logger();
-  //final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
+ //final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
  final String baseUrl = 'https://heavensconnect.onrender.com';  // Use base URL
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   /// Login
@@ -456,11 +456,24 @@ class AuthService {
       return true;
     } else {
       logger.e('Forgot Password Error: ${response.body}');
+
       return false;
     }
   }
 
 
+  Future<bool> resetPassword(String uid, String token, String newPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/reset-password/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'uid': uid, 'token': token, 'new_password': newPassword}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
 
   Future<bool> changePassword(String currentPassword, String newPassword) async {
     final token = await getToken();
@@ -1276,5 +1289,7 @@ class AuthService {
       return null;
     }
   }
+
+
 
 }

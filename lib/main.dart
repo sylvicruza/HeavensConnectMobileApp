@@ -17,6 +17,7 @@ import 'package:heavens_connect/screens/member/member_contribution_list_screen.d
 import 'package:heavens_connect/screens/member/member_contribution_screen.dart';
 import 'package:heavens_connect/screens/member/member_dashboard.dart';
 import 'package:heavens_connect/screens/member/member_profile_screen.dart';
+import 'package:heavens_connect/screens/member/reset_password_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_details_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_edit_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_list_screen.dart';
@@ -58,12 +59,12 @@ class MyApp extends StatelessWidget {
         },
         '/allMembers': (context) => const AllMembersScreen(),
         '/addMember': (context) => const AddMemberScreen(),
-        '/profile': (context) => MemberProfileScreen(memberData: {}),
+        '/profile': (context) => const MemberProfileScreen(memberData: {}),
         '/adminDashboard': (context) => const AdminDashboard(),
         '/memberDashboard': (context) => const MemberDashboard(),
         '/requestMembership': (context) => const RequestMembershipScreen(),
-        '/pendingRequests': (context) => PendingRequestsScreen(),
-        '/pendingRecords': (context) => PendingRecordsScreen(),
+        '/pendingRequests': (context) => const PendingRequestsScreen(),
+        '/pendingRecords': (context) => const PendingRecordsScreen(),
         '/contributions': (context) => const ContributionListScreen(),
         '/addContribution': (context) => const AddContributionScreen(),
         '/memberAddContribution': (context) => const MemberContributionScreen(),
@@ -99,13 +100,15 @@ class MyApp extends StatelessWidget {
           return EditAdminUserScreen(adminData: args);
         },
         '/addDisbursement': (context) => const AddDisbursementScreen(),
-        '/change-password': (context) => ChangePasswordScreen(),
+        '/change-password': (context) => const ChangePasswordScreen(),
         '/forgotPassword': (context) => const ForgotPasswordScreen(),
+        '/reset-password': (context) => const ResetPasswordScreen(),
+
         '/member-account-statement': (context) => const MemberAccountStatementScreen(),
         '/adminFinanceAnalysis': (context) => const AdminFinanceDashboardScreen(),
 
       },
-      home: SplashScreen(),
+      home: const SplashScreen(),
 
     );
   }

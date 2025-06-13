@@ -49,5 +49,15 @@
     <string>We need camera access to take pictures for profile</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>We need photo library access to choose profile pictures</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<string>heavensconnect</string>
+		</array>
+	</dict>
+	</array>
+
 </dict>
 </plist>
