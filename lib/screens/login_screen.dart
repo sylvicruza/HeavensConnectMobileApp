@@ -1,9 +1,10 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/utils/app_dialog.dart';
 import '../utils/app_theme.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,6 +25,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+
+  bool _buttonPressed = false;
 
   @override
   void initState() {
@@ -63,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     AppDialog.showLoadingDialog(context);
 
     final success = await _authService.login(username, password);
-    Navigator.pop(context); // close loading
+    Navigator.pop(context);
 
     if (success) {
       final userType = await _authService.getUserType();
@@ -95,37 +98,34 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return Scaffold(
       body: Stack(
         children: [
-          // BACKGROUND GRADIENT
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  primaryColor, // Faithful Purple
-                  secondaryColor
-                ],
+                colors: [primaryColor, secondaryColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
 
-          // LOGO WITH ICON + TEXT
+          // LOGO WITH TEXT
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(top: 100),
+              padding: const EdgeInsets.only(top: 100, bottom: 16),
               child: ScaleTransition(
                 scale: _fadeAnimation,
                 child: Column(
                   children: [
                     SvgPicture.asset(
                       'assets/icons/volunteer_heart_icon.svg',
-                      color: Colors.white,
-                      width: 85,
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 90,
                       height: 90,
                     ),
                     Text(
                       'Heavens Connect',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.montserrat(
                         fontSize: 28,
                         color: Colors.white,
@@ -137,8 +137,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       'The Welfare App',
                       style: GoogleFonts.montserrat(
                         fontSize: 14,
-                        color: Colors.white70,
                         fontWeight: FontWeight.w400,
+                        color: Colors.white70,
                       ),
                     ),
                   ],
@@ -147,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             ),
           ),
 
-          // FORM CARD
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -156,9 +155,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 color: isDark
                     ? Colors.black.withOpacity(0.5)
                     : Colors.white.withOpacity(0.9),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -168,8 +165,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ],
               ),
               child: SingleChildScrollView(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                 child: Column(
                   children: [
                     Text(
@@ -184,20 +180,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     Text(
                       'Login to continue',
                       style: GoogleFonts.montserrat(
+                        fontSize: 15,
                         color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    _buildTextField(
-                        _usernameController, 'Username', Icons.person),
+                    _buildTextField(_usernameController, 'Username', Icons.person),
                     const SizedBox(height: 16),
                     _buildPasswordField(),
                     const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () => Navigator.pushNamed(
-                            context, '/forgotPassword'),
+                        onPressed: () => Navigator.pushNamed(context, '/forgotPassword'),
                         child: Text(
                           'Forgot Password?',
                           style: GoogleFonts.montserrat(
@@ -209,18 +205,55 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       ),
                     ),
                     const SizedBox(height: 20),
-                    _buildGradientButton(),
+                    GestureDetector(
+                      onTapDown: (_) => setState(() => _buttonPressed = true),
+                      onTapUp: (_) {
+                        setState(() => _buttonPressed = false);
+                        _login();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 100),
+                        transform: Matrix4.identity()
+                          ..scale(_buttonPressed ? 0.98 : 1.0),
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [primaryColor, primaryColor.withOpacity(0.7)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Login',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Divider(color: Colors.grey.shade300),
                     const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/requestMembership'),
-                      child: Text(
-                        "Don't have an account? Request Membership",
-                        style: GoogleFonts.montserrat(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w500,
+                    Center(
+                      child: TextButton(
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/requestMembership'),
+                        child: Text(
+                          "Don't have an account? Request Membership",
+                          style: GoogleFonts.montserrat(
+                            color: primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -234,96 +267,43 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: primaryColor),
-          filled: true,
-          fillColor: Colors.white,
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: primaryColor),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: primaryColor, width: 1.5),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
   }
 
   Widget _buildPasswordField() {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+    return TextField(
+      controller: _passwordController,
+      obscureText: _obscurePassword,
+      decoration: InputDecoration(
+        labelText: 'Password',
+        prefixIcon: Icon(Icons.lock, color: primaryColor),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+            color: primaryColor,
           ),
-        ],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: TextField(
-        controller: _passwordController,
-        obscureText: _obscurePassword,
-        decoration: InputDecoration(
-          labelText: 'Password',
-          prefixIcon: Icon(Icons.lock, color: primaryColor),
-          suffixIcon: IconButton(
-            icon: Icon(
-              _obscurePassword
-                  ? Icons.visibility_off
-                  : Icons.visibility,
-              color: primaryColor,
-            ),
-            onPressed: () =>
-                setState(() => _obscurePassword = !_obscurePassword),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
         ),
-      ),
-    );
-  }
-
-  Widget _buildGradientButton() {
-    return GestureDetector(
-      onTap: _login,
-      child: Container(
-        height: 50,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [primaryColor, primaryColor.withOpacity(0.7)]),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: primaryColor, width: 1.5),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          'Login',
-          style: GoogleFonts.montserrat(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
         ),
       ),
     );

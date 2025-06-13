@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../services/auth_service.dart';
-import '../../utils/app_dialog.dart';
-import '../../utils/app_theme.dart';
+import '../services/auth_service.dart';
+import '../utils/app_dialog.dart';
+import '../utils/app_theme.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String? uid;
