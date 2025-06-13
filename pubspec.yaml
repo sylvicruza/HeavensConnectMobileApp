@@ -97,6 +97,7 @@ flutter:
   - assets/animations/warning.json
   - assets/animations/warning1.json
   - assets/icons/volunteer_heart_icon.svg
+  - assets/icons/hc_logo_trans.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

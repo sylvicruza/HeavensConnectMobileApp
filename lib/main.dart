@@ -17,7 +17,7 @@ import 'package:heavens_connect/screens/member/member_contribution_list_screen.d
 import 'package:heavens_connect/screens/member/member_contribution_screen.dart';
 import 'package:heavens_connect/screens/member/member_dashboard.dart';
 import 'package:heavens_connect/screens/member/member_profile_screen.dart';
-import 'package:heavens_connect/screens/member/reset_password_screen.dart';
+import 'package:heavens_connect/screens/reset_password_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_details_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_edit_screen.dart';
 import 'package:heavens_connect/screens/member/welfare_request_list_screen.dart';
