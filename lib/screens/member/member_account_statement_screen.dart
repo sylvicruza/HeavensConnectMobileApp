@@ -9,17 +9,17 @@ class MemberAccountStatementScreen extends StatefulWidget {
   const MemberAccountStatementScreen({super.key});
 
   @override
-  State<MemberAccountStatementScreen> createState() => _MemberAccountStatementScreenState();
+  State<MemberAccountStatementScreen> createState() =>
+      _MemberAccountStatementScreenState();
 }
 
-class _MemberAccountStatementScreenState extends State<MemberAccountStatementScreen> {
+class _MemberAccountStatementScreenState
+    extends State<MemberAccountStatementScreen> {
   final Color themeColor = AppTheme.themeColor;
   final AuthService _authService = AuthService();
 
   DateTime? _fromDate;
   DateTime? _toDate;
-  String _format = 'pdf';
-
   final DateFormat _displayFormat = DateFormat('dd MMM yyyy');
 
   Future<void> _pickDateRange() async {
@@ -61,15 +61,15 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
 
     AppDialog.showLoadingDialog(context);
 
-    final success = await _authService.requestAccountStatement(
+    final response = await _authService.requestAccountStatement(
       fromDate: _fromDate!,
       toDate: _toDate!,
-      format: _format,
+      format: 'pdf',
     );
 
     Navigator.pop(context);
 
-    if (success) {
+    if (response == "success") {
       AppDialog.showSuccessDialog(
         context,
         title: 'Statement Sent',
@@ -79,7 +79,7 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
       AppDialog.showWarningDialog(
         context,
         title: 'Failed',
-        message: 'Unable to process your request. Please try again.',
+        message: response,
       );
     }
   }
@@ -92,24 +92,36 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Request Statement', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text(
+          'Request Statement',
+          style: GoogleFonts.montserrat(
+            color: themeColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select Date Range', style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16)),
+            Text('Select Date Range',
+                style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: _pickDateRange,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                padding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.shade200, blurRadius: 8, offset: const Offset(0, 4)),
+                    BoxShadow(
+                        color: Colors.grey.shade200,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4)),
                   ],
                   border: Border.all(color: themeColor.withOpacity(0.2)),
                 ),
@@ -122,22 +134,42 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
                         _fromDate != null && _toDate != null
                             ? '${_displayFormat.format(_fromDate!)} → ${_displayFormat.format(_toDate!)}'
                             : 'Tap to select date range',
-                        style: GoogleFonts.montserrat(fontSize: 15, color: Colors.grey[800]),
+                        style: GoogleFonts.montserrat(
+                            fontSize: 15, color: Colors.grey[800]),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            Text('Format', style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16)),
+            const SizedBox(height: 30),
+            Text('Format',
+                style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                _formatOption('PDF', 'pdf'),
-                const SizedBox(width: 12),
-                _formatOption('Excel (coming soon)', 'excel', enabled: false),
-              ],
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: themeColor,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: themeColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  'PDF',
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
             const Spacer(),
             AnimatedContainer(
@@ -146,9 +178,13 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
               height: 56,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(colors: [themeColor, themeColor.withOpacity(0.8)]),
+                gradient:
+                LinearGradient(colors: [themeColor, themeColor.withOpacity(0.8)]),
                 boxShadow: [
-                  BoxShadow(color: themeColor.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
+                  BoxShadow(
+                      color: themeColor.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5)),
                 ],
               ),
               child: Material(
@@ -168,46 +204,9 @@ class _MemberAccountStatementScreenState extends State<MemberAccountStatementScr
                   ),
                 ),
               ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _formatOption(String label, String value, {bool enabled = true}) {
-    final selected = _format == value;
-    return Expanded(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: selected ? themeColor : Colors.white,
-          border: Border.all(color: themeColor),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: selected
-              ? [
-            BoxShadow(
-              color: themeColor.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
-            )
-          ]
-              : [],
-        ),
-        child: GestureDetector(
-          onTap: enabled
-              ? () => setState(() => _format = value)
-              : null,
-          child: Center(
-            child: Text(
-              label,
-              style: GoogleFonts.montserrat(
-                color: selected ? Colors.white : (enabled ? themeColor : Colors.grey),
-                fontWeight: FontWeight.w600,
-              ),
             ),
-          ),
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );

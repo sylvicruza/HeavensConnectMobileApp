@@ -111,7 +111,7 @@ class _MemberWelfareRequestListScreenState extends State<MemberWelfareRequestLis
           final result = await Navigator.pushNamed(context, '/memberSubmitWelfareRequest');
           if (result == true) fetchRequests(); // Refresh on return
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       bottomNavigationBar: MemberBottomNavBar(selectedIndex: 2),
 

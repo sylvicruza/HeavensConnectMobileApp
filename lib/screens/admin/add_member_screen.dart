@@ -62,18 +62,34 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
     AppDialog.showLoadingDialog(context, message: 'Submitting member data...');
 
-    await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+    final data = {
+      'full_name': _fullNameController.text.trim(),
+      'email': _emailController.text.trim(),
+      'phone_number': _phoneController.text.trim(),
+      'address': _addressController.text.trim(),
+      'status': 'active',
+    };
+
+    final success = await AuthService().addMemberWithImage(data, _profileImage);
 
     Navigator.pop(context); // Close loading
 
-    await AppDialog.showSuccessDialog(
-      context,
-      title: 'Member Added!',
-      message: 'The member was successfully added to the system.',
-    );
-
-    Navigator.pop(context, true);
+    if (success) {
+      await AppDialog.showSuccessDialog(
+        context,
+        title: 'Member Added!',
+        message: 'The member was successfully added to the system.',
+      );
+      Navigator.pop(context, true);
+    } else {
+      await AppDialog.showWarningDialog(
+        context,
+        title: 'Error',
+        message: 'Failed to add member. Please try again.',
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +111,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               _buildCardField(_buildTextField(_fullNameController, 'Full Name', required: true)),
               _buildCardField(_buildTextField(_emailController, 'Email', keyboardType: TextInputType.emailAddress, required: true)),
               _buildCardField(_buildTextField(_phoneController, 'Phone Number', keyboardType: TextInputType.phone, required: true)),
-              _buildCardField(_buildDropdownField()),
               _buildCardField(_buildTextField(_addressController, 'Address')),
               const SizedBox(height: 30),
               _buildSubmitButton(),

@@ -173,7 +173,7 @@ class _AllMembersScreenState extends State<AllMembersScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: themeColor,
-        child: const Icon(Icons.person_add_alt_1),
+        child: const Icon(Icons.person_add_alt_1, color: Colors.white),
         onPressed: () async {
           final refreshed = await Navigator.pushNamed(context, '/addMember');
           if (refreshed == true) fetchMembers();

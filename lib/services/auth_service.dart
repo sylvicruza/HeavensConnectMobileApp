@@ -275,6 +275,27 @@ class AuthService {
 
     return response.statusCode == 201;
   }
+
+  Future<bool> addMemberWithImage(Map<String, String> memberData, File? imageFile) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final uri = Uri.parse('$baseUrl/api/members/');
+    final request = http.MultipartRequest('POST', uri)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..fields.addAll(memberData);
+
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('profile_picture', imageFile.path));
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    return response.statusCode == 201;
+  }
+
+
   Future<bool> deleteMember(int memberId) async {
     final token = await getToken();
     if (token == null) return false;
@@ -902,14 +923,14 @@ class AuthService {
     }
   }
 
-  // Request account statement
-  Future<bool> requestAccountStatement({
+  Future<String> requestAccountStatement({
     required DateTime fromDate,
     required DateTime toDate,
     required String format,
   }) async {
     final token = await getToken();
-    if (token == null) return false;
+    if (token == null) return "Authentication error. Please log in again.";
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/member/request-statement/'),
@@ -926,16 +947,23 @@ class AuthService {
 
       if (response.statusCode == 200) {
         logger.i('Statement request successful');
-        return true;
+        return "success";
       } else {
         logger.e('Failed to request statement: ${response.body}');
-        return false;
+        // ✅ Try to decode the message nicely
+        try {
+          final Map<String, dynamic> error = json.decode(response.body);
+          return error['detail'] ?? 'Unknown error occurred.';
+        } catch (_) {
+          return 'Something went wrong. Please try again.';
+        }
       }
     } catch (e) {
       logger.e('Error requesting statement: $e');
-      return false;
+      return 'Network error. Please check your connection.';
     }
   }
+
 
   Future<List<dynamic>?> searchMembers(String query) async {
     final token = await getToken();
@@ -1057,11 +1085,17 @@ class AuthService {
   }
 
   /// Fetches the summary totals: total_income, total_expense, monthly data
-  Future<Map<String, dynamic>> getFinanceSummary() async {
+  Future<Map<String, dynamic>> getFinanceSummary({int? year, int? month}) async {
     final token = await getToken();
     if (token == null) return {};
 
-    final uri = Uri.parse('$baseUrl/api/finance/summary/');
+    final queryParams = {
+      if (year != null) 'year': year.toString(),
+      if (month != null) 'month': month.toString(),
+    };
+
+    final uri = Uri.parse('$baseUrl/api/finance/summary/').replace(queryParameters: queryParams);
+
     final response = await http.get(uri, headers: {
       'Authorization': 'Bearer $token',
     });
@@ -1070,26 +1104,24 @@ class AuthService {
       return jsonDecode(response.body);
     } else if (response.statusCode == 401) {
       final refreshed = await refreshToken();
-      if (refreshed) return await getFinanceSummary();
+      if (refreshed) return await getFinanceSummary(year: year, month: month);
     }
     return {};
   }
+
 
   /// Fetches all finance transactions (both income and expenses), with optional filters
-  Future<Map<String,dynamic>> getFinanceTransactions({
-    String? type, // 'income' or 'expense' or null
-    int? year,
-    int? month,
-  }) async {
+  Future<Map<String, dynamic>> getFinanceTransactions({int? year, int? month}) async {
     final token = await getToken();
     if (token == null) return {};
 
-    String url = '$baseUrl/api/finance/transactions/?';
-    if (type != null) url += 'type=$type&';
-    if (year != null) url += 'year=$year&';
-    if (month != null) url += 'month=$month&';
+    final queryParams = {
+      if (year != null) 'year': year.toString(),
+      if (month != null) 'month': month.toString(),
+    };
 
-    final uri = Uri.parse(url);
+    final uri = Uri.parse('$baseUrl/api/finance/transactions/').replace(queryParameters: queryParams);
+
     final response = await http.get(uri, headers: {
       'Authorization': 'Bearer $token',
     });
@@ -1098,12 +1130,12 @@ class AuthService {
       return jsonDecode(response.body);
     } else if (response.statusCode == 401) {
       final refreshed = await refreshToken();
-      if (refreshed) {
-        return await getFinanceTransactions(type: type, year: year, month: month);
-      }
+      if (refreshed) return await getFinanceTransactions(year: year, month: month);
     }
+
     return {};
   }
+
 
   Future<Map<String, List<String>>> getSystemSettings() async {
     final token = await getToken();
@@ -1288,6 +1320,28 @@ class AuthService {
       logger.e('Authenticated request error: $e');
       return null;
     }
+  }
+
+  Future<List<dynamic>?> getPendingContributionBatches() async {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/contributions/pending-batches/'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    return null;
+  }
+
+  Future<bool> verifyContributionBatch(String batchId) async {
+    final token = await getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/contributions/verify-batch/'),
+      headers: {'Authorization': 'Bearer $token'},
+      body: {'batch_id': batchId},
+    );
+    return response.statusCode == 200;
   }
 
 

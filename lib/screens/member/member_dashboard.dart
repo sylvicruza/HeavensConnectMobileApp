@@ -98,25 +98,34 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   : null,
             ),
             const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _getGreeting(),
-                  style: GoogleFonts.montserrat(
-                      fontSize: 12, color: Colors.grey[600]),
-                ),
-                Text(
-                  memberProfile?['full_name'] ?? '',
-                  style: GoogleFonts.montserrat(
+            /// 🛠 Wrap this Column in Expanded to prevent overflow
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getGreeting(),
+                    style: GoogleFonts.montserrat(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    memberProfile?['full_name'] ?? '',
+                    style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ],
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis, // 👈 optional
+                    maxLines: 1, // 👈 optional
+                  ),
+                ],
+              ),
             ),
           ],
         ),
+
         actions: [
           Stack(
             children: [
@@ -162,7 +171,13 @@ class _MemberDashboardState extends State<MemberDashboard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildGlassBalanceCard(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/member-account-statement');
+                },
+                child:  _buildGlassBalanceCard(),
+              ),
+
               const SizedBox(height: 28),
               _buildNeumorphicQuickActions(),
               const SizedBox(height: 20),

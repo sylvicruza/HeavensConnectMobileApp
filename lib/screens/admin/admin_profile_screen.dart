@@ -162,10 +162,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           ]),
           const SizedBox(height: 20),
           _settingsSection('Preferences', [
-            _toggleItem(Icons.dark_mode, 'Dark Mode', _darkMode, (value) {
-              setState(() => _darkMode = value);
-              // Save to SharedPreferences or apply theme change in the app
-            }),
             _toggleItem(Icons.notifications_active, 'Notifications', _notifications, (value) {
               setState(() => _notifications = value);
             }),
