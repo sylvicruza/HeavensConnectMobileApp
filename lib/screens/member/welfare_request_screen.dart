@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/utils/setting_keys.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../utils/app_dialog.dart';
 import '../../utils/app_theme.dart';
 
@@ -21,7 +20,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
   final TextEditingController amountController = TextEditingController();
 
   List<String> categories = [];
-  String selectedCategory = 'medical';
+  String selectedCategory = 'school_fees';
   File? attachment;
   bool isSubmitting = false;
 
@@ -37,15 +36,8 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
     final settings = await _authService.getSystemSettings();
     setState(() {
       categories = settings[SettingKeys.categories]?.cast<String>() ?? [
-        'school_fees',
-        'marriage',
-        'funeral',
-        'job_loss',
-        'medical',
-        'baby_dedication',
-        'food',
-        'rent',
-        'others',
+        'school_fees', 'marriage', 'funeral', 'job_loss',
+        'medical', 'baby_dedication', 'food', 'rent', 'others',
       ];
       selectedCategory = categories.contains(selectedCategory) ? selectedCategory : categories.first;
     });
@@ -65,6 +57,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
       return;
     }
 
+    setState(() => isSubmitting = true);
     AppDialog.showLoadingDialog(context);
 
     final success = await _authService.submitWelfareRequest({
@@ -74,10 +67,11 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
     }, attachment: attachment);
 
     Navigator.pop(context); // close loading
+    setState(() => isSubmitting = false);
 
     if (success) {
-      await AppDialog.showSuccessDialog(context, title: 'Submitted', message: 'Welfare request submitted successfully');
-      Navigator.pop(context, true);
+      await AppDialog.showSuccessDialog(context, title: 'Submitted', message: 'You submitted a welfare request.\n\nYour request is pending review and will reflect once approved.');
+      Navigator.pushReplacementNamed(context, '/memberWelfareRequests');
     } else {
       await AppDialog.showWarningDialog(context, title: 'Failed', message: 'Failed to submit request');
     }
@@ -86,40 +80,40 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: const Color(0xFFF2F4F7),
       appBar: AppBar(
         title: Text('Welfare Request', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: themeColor),
         elevation: 0,
+        iconTheme: IconThemeData(color: themeColor),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildCardWrapper(_buildCategoryDropdown()),
-          const SizedBox(height: 16),
-          _buildCardWrapper(_buildTextField('Description', descriptionController, maxLines: 4)),
-          const SizedBox(height: 16),
-          _buildCardWrapper(_buildTextField('Amount Requested (£) - optional', amountController, inputType: TextInputType.number)),
-          const SizedBox(height: 16),
-          _buildCardWrapper(_buildAttachmentPicker()),
-          const SizedBox(height: 30),
-          _buildSubmitButton(),
-        ],
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            _buildGlassCard(_buildCategoryDropdown()),
+            const SizedBox(height: 16),
+            _buildGlassCard(_buildTextField('Description', descriptionController, maxLines: 4)),
+            const SizedBox(height: 16),
+            _buildGlassCard(_buildTextField('Amount Requested (£) - optional', amountController, inputType: TextInputType.number)),
+            const SizedBox(height: 16),
+            _buildGlassCard(_buildAttachmentPicker()),
+            const SizedBox(height: 30),
+            _buildSubmitButton(),
+          ],
+        ),
       ),
     );
   }
 
-  /// UI Wrappers
-  Widget _buildCardWrapper(Widget child) {
+  Widget _buildGlassCard(Widget child) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.shade200, blurRadius: 12, offset: const Offset(0, 6)),
-        ],
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: child,
     );
@@ -128,12 +122,38 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
   Widget _buildCategoryDropdown() {
     return DropdownButtonFormField<String>(
       value: selectedCategory,
-      items: categories.map((c) => DropdownMenuItem(value: c, child: Text(c.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.montserrat()))).toList(),
+      items: categories.map((c) {
+        return DropdownMenuItem(
+          value: c,
+          child: Row(
+            children: [
+              Icon(categoryIcons[c] ?? Icons.category, color: themeColor, size: 20),
+              const SizedBox(width: 8),
+              Text(c.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.montserrat()),
+            ],
+          ),
+        );
+      }).toList(),
+
       onChanged: (value) => setState(() => selectedCategory = value!),
       decoration: InputDecoration(
         labelText: 'Select Category',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        labelStyle: GoogleFonts.montserrat(),
         prefixIcon: Icon(Icons.category, color: themeColor),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: themeColor, width: 1.5),
+        ),
+        filled: true,
+        fillColor: Colors.white,
       ),
     );
   }
@@ -143,9 +163,24 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
       controller: controller,
       keyboardType: inputType,
       maxLines: maxLines,
+      style: GoogleFonts.montserrat(),
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        hintStyle: GoogleFonts.montserrat(color: Colors.grey[600]),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: themeColor, width: 1.5),
+        ),
         prefixIcon: hint.contains('Amount') ? Icon(Icons.attach_money, color: themeColor) : null,
       ),
     );
@@ -169,7 +204,14 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
               label: Text('Upload', style: GoogleFonts.montserrat(color: Colors.white)),
             ),
             const SizedBox(width: 12),
-            if (attachment != null) Text('File Selected', style: GoogleFonts.montserrat(color: Colors.green)),
+            if (attachment != null)
+              Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  const SizedBox(width: 6),
+                  Text('File Selected', style: GoogleFonts.montserrat(color: Colors.green)),
+                ],
+              ),
           ],
         )
       ],
@@ -197,3 +239,15 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
 }
 
 String capitalize(String text) => text.isNotEmpty ? '${text[0].toUpperCase()}${text.substring(1)}' : '';
+
+final Map<String, IconData> categoryIcons = {
+  'school_fees': Icons.school,
+  'marriage': Icons.favorite,
+  'funeral': Icons.emoji_people,
+  'job_loss': Icons.work_off,
+  'medical': Icons.local_hospital,
+  'baby_dedication': Icons.child_friendly,
+  'food': Icons.fastfood,
+  'rent': Icons.house,
+  'others': Icons.more_horiz,
+};

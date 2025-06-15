@@ -6,6 +6,8 @@ import 'package:heavens_connect/screens/admin/admin_financial_dashboard.dart';
 import 'package:heavens_connect/screens/admin/admin_welfare_details_screen.dart';
 import 'package:heavens_connect/screens/admin/admin_welfare_list_screen.dart';
 import 'package:heavens_connect/screens/admin/all_adminuser_screen.dart';
+import 'package:heavens_connect/screens/admin/contribution_batch_detail_screen.dart';
+import 'package:heavens_connect/screens/admin/contribution_batch_list_screen.dart';
 import 'package:heavens_connect/screens/admin/disbursement_details_screen.dart';
 import 'package:heavens_connect/screens/admin/disbursement_list_screen.dart';
 import 'package:heavens_connect/screens/admin/edit_adminuser_screen.dart';
@@ -106,6 +108,11 @@ class MyApp extends StatelessWidget {
 
         '/member-account-statement': (context) => const MemberAccountStatementScreen(),
         '/adminFinanceAnalysis': (context) => const AdminFinanceDashboardScreen(),
+        '/batchList': (context) => const ContributionBatchListScreen(),
+        '/batchDetail': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return ContributionBatchDetailScreen(batch: args);
+        },
 
       },
       home: const SplashScreen(),

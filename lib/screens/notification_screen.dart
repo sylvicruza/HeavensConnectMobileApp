@@ -63,33 +63,40 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           : RefreshIndicator(
         onRefresh: fetchNotifications,
         child: ListView.builder(
-          itemCount: notifications.length,
-          itemBuilder: (context, index) {
-            final notif = notifications[index] ?? {};
-            final title = notif['title'] ?? 'No Title';
-            final message = notif['message'] ?? 'No message available';
-            final isRead = notif['read'] ?? false;
+          itemCount: notifications?.length ?? 0,
+            itemBuilder: (context, index) {
+              final rawNotif = notifications[index];
+              if (rawNotif is! Map<String, dynamic>) return const SizedBox.shrink();
+              final notif = rawNotif;
 
-            return Card(
-              margin:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ListTile(
-                leading: Icon(Icons.notifications,
-                    color: themeColor.withOpacity(0.7)),
-                title: Text(title,
-                    style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.bold)),
-                subtitle: Text(message),
-                trailing: isRead
-                    ? null
-                    : Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                      color: Colors.red, shape: BoxShape.circle),
-                ),
-              ),
-            );
-          },
+              final title = notif['title']?.toString() ?? 'No Title';
+              final message = notif['message']?.toString() ?? 'No message available';
+              final isRead = notif['read'] == true;
+
+              try {
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ListTile(
+                    leading: Icon(Icons.notifications, color: themeColor.withOpacity(0.7)),
+                    title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+                    subtitle: Text(message),
+                    trailing: isRead
+                        ? null
+                        : Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                );
+              } catch (e, stack) {
+                debugPrint('Notification render error: $e\n$stack');
+                return const SizedBox.shrink();
+              }
+            }
+
         ),
       ),
     );

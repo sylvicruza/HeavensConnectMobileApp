@@ -183,7 +183,7 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
             if (value == true) fetchDisbursements();
           });
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       bottomNavigationBar: const AdminBottomNavBar(),
     );

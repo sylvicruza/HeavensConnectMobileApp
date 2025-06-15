@@ -168,10 +168,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         await AppDialog.showSuccessDialog(
           context,
           title: 'Success',
-          message: 'Your password has been updated.',
+          message: 'Your password has been updated.\nPlease log in again with the new password.',
         );
-        Navigator.pop(context);
-      } else {
+
+        // Log user out and navigate to login screen
+        await _authService.logout();
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      }
+      else {
         await AppDialog.showWarningDialog(
           context,
           title: 'Failed',

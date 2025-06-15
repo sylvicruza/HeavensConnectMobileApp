@@ -3,7 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/auth_service.dart';
 import '../../utils/app_theme.dart';
+import '../../utils/setting_keys.dart';
 import 'edit_member_profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MemberProfileScreen extends StatefulWidget {
   final Map<String, dynamic> memberData;
@@ -18,8 +21,35 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
   final AuthService _authService = AuthService();
   int _selectedIndex = 0;
   final Color themeColor = AppTheme.themeColor;
-  bool _darkMode = false;
+
   bool _notifications = true;
+  String? contactSupport;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+    _loadSystemSettings();
+  }
+
+
+
+
+  Future<void> _loadSystemSettings() async {
+    final settings = await _authService.getSystemSettings();
+    setState(() {
+      contactSupport = settings[SettingKeys.contactSupport]?.join(' ') ?? null;
+    });
+  }
+
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notifications = prefs.getBool('notifications') ?? true;
+    });
+  }
+
 
 
   @override
@@ -30,7 +60,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Profile and settings', style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w600)),
+        title: Text('Profile and settings', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w600)),
       ),
       body: Column(
         children: [
@@ -136,7 +166,27 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
         children: [
           const SizedBox(height: 10),
           _settingsSection('How we contact you', [
-            _settingsItem(Icons.help, 'Need Help Contact Support', () {}),
+            _settingsItem(Icons.help, 'Need Help Contact Support', () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Contact Support', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+                  content: Text(
+                    contactSupport ??
+                        'Email: support@heavensconnect.org\nPhone: +44 123 456 7890\nWhatsApp: +44 987 654 3210',
+                    style: GoogleFonts.montserrat(),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+
             _settingsItem(Icons.article_outlined, 'Print Account Statement', () {
               Navigator.pushNamed(context, '/member-account-statement');
             }),
@@ -145,23 +195,38 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
           const SizedBox(height: 20),
           _settingsSection('App Security', [
             _settingsItem(Icons.lock_reset, 'Reset your password', () {
-              Navigator.pushNamed(context, '/change-password');  // ✅ Wire change password
+              Navigator.pushNamed(context, '/change-password');  //
             }),
-            _settingsItem(Icons.timer, 'Auto logoff', () {
-              _logout();
-            }),
-            _settingsItem(Icons.refresh, 'Reset mobile app', () {
-              _resetApp();
+            _settingsItem(Icons.logout, 'Logout', () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  title: Text('Logout', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+                  content: Text('Are you sure you want to log out?', style: GoogleFonts.montserrat()),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                    ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _logout();
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: themeColor),
+                      child: Text('Logout', style: GoogleFonts.montserrat(color: Colors.white)),
+                    )
+                  ],
+                ),
+              );
             }),
           ]),
           const SizedBox(height: 20),
           _settingsSection('Preferences', [
-            _toggleItem(Icons.dark_mode, 'Dark Mode', _darkMode, (value) {
-              setState(() => _darkMode = value);
-            }),
-            _toggleItem(Icons.notifications_active, 'Notifications', _notifications, (value) {
+            _toggleItem(Icons.notifications_active, 'Notifications', _notifications, (value) async {
               setState(() => _notifications = value);
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('notifications', value);
             }),
+
           ]),
 
         ],
@@ -227,17 +292,19 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade300),
       ),
-      child: SwitchListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-        secondary: Icon(icon, color: themeColor),
-        title: Text(title,
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w500, color: Colors.black87)),
-        value: currentValue,
-        onChanged: onChanged,
+      child: IgnorePointer( // Makes the switch untouchable
+        ignoring: title == 'Notifications', // Lock only notifications
+        child: SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          secondary: Icon(icon, color: themeColor),
+          title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.black87)),
+          value: currentValue,
+          onChanged: onChanged,
+        ),
       ),
     );
   }
+
 
   Future<void> _logout() async {
     await _authService.logout();
@@ -245,10 +312,5 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
-  Future<void> _resetApp() async {
-    await _authService.logout();
-    if (!mounted) return;
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
-  }
 
 }

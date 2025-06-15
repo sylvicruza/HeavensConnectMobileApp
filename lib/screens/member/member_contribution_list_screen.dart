@@ -163,7 +163,7 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: themeColor,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white,),
         onPressed: () async {
           final result = await Navigator.pushNamed(context, '/memberAddContribution');
           if (result == true) fetchContributions();

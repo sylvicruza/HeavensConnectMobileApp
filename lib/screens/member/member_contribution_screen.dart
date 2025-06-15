@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavens_connect/services/auth_service.dart';
 import 'package:heavens_connect/services/contribution_service.dart';
+import 'package:heavens_connect/utils/setting_keys.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:heavens_connect/utils/app_dialog.dart';
 import '../../utils/app_theme.dart';
@@ -37,7 +38,7 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
   Future<void> _loadSettings() async {
     final settings = await _authService.getSystemSettings();
     setState(() {
-      bankDetails = settings['bank_account']?.join('\n') ?? '';
+      bankDetails = settings[SettingKeys.bankAccount]?.join('\n') ?? '';
     });
   }
 
@@ -78,12 +79,19 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
     Navigator.pop(context);
 
     if (success) {
+      final amount = amountController.text;
+      final numMonths = int.tryParse(numberOfMonthsController.text) ?? 1;
+      final customMessage = numMonths > 1
+          ? "You submitted a contribution of \u00a3$amount split across $numMonths months.\n\nYour contribution is pending verification and will reflect on your balance once approved."
+          : "You submitted a contribution of \u00a3$amount.\n\nYour contribution is pending verification and will reflect on your balance once approved.";
+
       await AppDialog.showSuccessDialog(
         context,
         title: 'Contribution Submitted',
-        message: 'Your contribution has been submitted successfully.',
+        message: customMessage,
       );
-      Navigator.pop(context, true);
+
+      Navigator.pushReplacementNamed(context, '/memberContributionList');
     } else {
       await AppDialog.showWarningDialog(
         context,
@@ -110,12 +118,12 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
               TextSpan(
                 style: GoogleFonts.montserrat(height: 1.5),
                 children: [
-                  const TextSpan(text: '• This form is ONLY for transfers. For '),
+                  const TextSpan(text: '\u2022 This form is ONLY for transfers. For '),
                   TextSpan(text: 'cash payments', style: const TextStyle(fontWeight: FontWeight.bold)),
                   const TextSpan(text: ', kindly hand over to the admin who will record it for you.\n\n'),
-                  const TextSpan(text: '• Ensure you have transferred the amount to:\n\n'),
+                  const TextSpan(text: '\u2022 Ensure you have transferred the amount to:\n\n'),
                   TextSpan(text: bankDetails ?? 'Bank account not found\n', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const TextSpan(text: '\n• Fill this form with your transaction details and upload proof of payment.'),
+                  const TextSpan(text: '\n\u2022 Fill this form with your transaction details and upload proof of payment.'),
                 ],
               ),
               textAlign: TextAlign.center,
@@ -129,42 +137,61 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF9F9FB),
       appBar: AppBar(
         title: Text('Submit Contribution', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
+        elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Stack(
           children: [
-            _buildTextField('Amount (£)', amountController, TextInputType.number),
-            const SizedBox(height: 16),
-            _buildTextField('Transaction Ref', transactionRefController),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(child: _buildMonthDropdown()),
-                const SizedBox(width: 12),
-                Expanded(child: _buildYearDropdown()),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildTextField('Number of Months', numberOfMonthsController, TextInputType.number),
-            const SizedBox(height: 16),
-            _buildProofOfPaymentPicker(),
-            const SizedBox(height: 24),
-            _buildInfoBox(),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: submitContribution,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: themeColor,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildBorderedTextField('Amount (£)', amountController, TextInputType.number),
+                    const SizedBox(height: 16),
+                    _buildBorderedTextField('Transaction Ref', transactionRefController),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(child: _buildBorderedDropdown('Month', selectedMonth, 12, monthName, (val) => setState(() => selectedMonth = val))),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildBorderedDropdown('Year', selectedYear, 3, (val) => val.toString(), (val) => setState(() => selectedYear = val))),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildBorderedTextField('Number of Months', numberOfMonthsController, TextInputType.number),
+                    const SizedBox(height: 20),
+                    _buildProofOfPaymentPicker(),
+                    const SizedBox(height: 24),
+                    _buildInfoBox(),
+                    const SizedBox(height: 80),
+                  ],
+                ),
               ),
-              child: Text('Submit', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+            Positioned(
+              bottom: 20,
+              left: 20,
+              right: 20,
+              child: ElevatedButton(
+                onPressed: _showConfirmationDialog,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: themeColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 5,
+                ),
+                child: Text('Submit Contribution', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
             )
           ],
         ),
@@ -172,50 +199,60 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, [TextInputType? inputType]) {
+  Widget _buildBorderedTextField(String label, TextEditingController controller, [TextInputType? inputType]) {
     return TextField(
       controller: controller,
       keyboardType: inputType,
       style: GoogleFonts.montserrat(),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: GoogleFonts.montserrat(color: themeColor),
         filled: true,
         fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: themeColor, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }
 
-  Widget _buildMonthDropdown() {
+  Widget _buildBorderedDropdown(String label, int currentValue, int count, String Function(int) labelBuilder, Function(int) onChanged) {
     return DropdownButtonFormField<int>(
-      value: selectedMonth,
-      items: List.generate(12, (index) => DropdownMenuItem(value: index + 1, child: Text(monthName(index + 1)))),
-      onChanged: (value) => setState(() => selectedMonth = value!),
+      value: currentValue,
+      onChanged: (val) => onChanged(val!),
       decoration: InputDecoration(
-        labelText: 'Month',
+        labelText: label,
+        labelStyle: GoogleFonts.montserrat(color: themeColor),
         filled: true,
         fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: themeColor, width: 1.5),
+        ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-    );
-  }
-
-  Widget _buildYearDropdown() {
-    int currentYear = DateTime.now().year;
-    return DropdownButtonFormField<int>(
-      value: selectedYear,
-      items: List.generate(5, (index) => DropdownMenuItem(value: currentYear - index, child: Text((currentYear - index).toString()))),
-      onChanged: (value) => setState(() => selectedYear = value!),
-      decoration: InputDecoration(
-        labelText: 'Year',
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
+      items: List.generate(count, (i) {
+        int value = label == 'Year' ? currentValue - i : i + 1;
+        return DropdownMenuItem(value: value, child: Text(labelBuilder(value)));
+      }),
     );
   }
 
@@ -223,17 +260,21 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Proof of Payment (required)', style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
-        const SizedBox(height: 8),
+        Text('Proof of Payment (required)', style: GoogleFonts.montserrat(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
         Row(
           children: [
             ElevatedButton(
               onPressed: pickProofOfPayment,
               style: ElevatedButton.styleFrom(backgroundColor: themeColor),
-              child: Text('Select Image', style: GoogleFonts.montserrat(color: Colors.white)),
+              child: Text('Upload Image', style: GoogleFonts.montserrat(color: Colors.white)),
             ),
             const SizedBox(width: 12),
-            if (proofOfPayment != null) Text('Image selected', style: GoogleFonts.montserrat(color: Colors.green)),
+            if (proofOfPayment != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(proofOfPayment!, width: 60, height: 60, fit: BoxFit.cover),
+              ),
           ],
         )
       ],
@@ -275,6 +316,63 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
       ),
     );
   }
+
+  Future<void> _showConfirmationDialog() async {
+    final amount = amountController.text.trim();
+    final transactionRef = transactionRefController.text.trim();
+    final months = numberOfMonthsController.text.trim();
+    final monthNameStr = monthName(selectedMonth);
+    final yearStr = selectedYear.toString();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Confirm Contribution', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildConfirmationRow('Amount', '£$amount'),
+            _buildConfirmationRow('Months', months),
+            _buildConfirmationRow('Month/Year', '$monthNameStr $yearStr'),
+            _buildConfirmationRow('Transaction Ref', transactionRef),
+            _buildConfirmationRow('Proof Attached', proofOfPayment != null ? 'Yes' : 'No'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel', style: GoogleFonts.montserrat(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: themeColor),
+            child: Text('Confirm', style: GoogleFonts.montserrat(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await submitContribution();
+    }
+  }
+
+  Widget _buildConfirmationRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 2, child: Text(label, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500))),
+          const SizedBox(width: 8),
+          Expanded(flex: 3, child: Text(value, style: GoogleFonts.montserrat())),
+        ],
+      ),
+    );
+  }
+
 }
 
 String monthName(int month) {
@@ -284,3 +382,4 @@ String monthName(int month) {
   ];
   return months[month - 1];
 }
+

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
 import '../../utils/app_theme.dart';
@@ -12,34 +12,39 @@ class AdminFinanceDashboardScreen extends StatefulWidget {
   State<AdminFinanceDashboardScreen> createState() => _AdminFinanceDashboardScreenState();
 }
 
-class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScreen> {
+class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScreen> with TickerProviderStateMixin {
   final AuthService _authService = AuthService();
   final Color themeColor = AppTheme.themeColor;
 
+  int selectedYear = DateTime.now().year;
+  int currentMonth = DateTime.now().month;
+
+  late PageController _pageController;
+  late AnimationController _controller;
+
   List<dynamic> transactions = [];
   Map<String, dynamic> summary = {};
-
-  String filter = 'all'; // all | income | expense
-
+  String filter = 'all';
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadFinanceData();
+    _pageController = PageController(initialPage: currentMonth - 1);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _loadFinanceData();
   }
 
-  Future<void> loadFinanceData() async {
+  Future<void> _loadFinanceData() async {
     setState(() => isLoading = true);
-
-    final s = await _authService.getFinanceSummary();
-    final txns = await _authService.getFinanceTransactions();
-
+    final s = await _authService.getFinanceSummary(year: selectedYear, month: currentMonth);
+    final txns = await _authService.getFinanceTransactions(year: selectedYear, month: currentMonth);
     setState(() {
       summary = s ?? {};
       transactions = txns['transactions'] ?? [];
       isLoading = false;
     });
+    _controller.forward(from: 0);
   }
 
   List<dynamic> get filteredTransactions {
@@ -49,54 +54,129 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F7F9),
       appBar: AppBar(
-        title: Text('Finance Overview', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
+        title: Text('Analytics', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: themeColor),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.print),
+            onPressed: _openPrintDialog,
+            tooltip: 'Print Statement',
+          )
+        ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-        onRefresh: loadFinanceData,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            _buildBalanceSummary(),
-            const SizedBox(height: 20),
-            _buildAnimatedBarChart(),
-            const SizedBox(height: 20),
-            //_buildDonutChart(),
-            const SizedBox(height: 20),
-            _buildFilterButtons(),
-            const SizedBox(height: 12),
-            ...filteredTransactions.map(_buildTransactionTile).toList(),
-            const SizedBox(height: 20),
-          /*  ElevatedButton.icon(
-              onPressed: () {
-                _openPrintDialog();  // Same function as the FAB "Print Statement"
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: 12,
+              onPageChanged: (index) {
+                setState(() => currentMonth = index + 1);
+                _loadFinanceData();
               },
-              icon: const Icon(Icons.download),
-              label: const Text('Download Statement'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: themeColor,
-                padding: const EdgeInsets.all(16),
-              ),
-            ),*/
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openPrintDialog,
-        backgroundColor: themeColor,
-        icon: const Icon(Icons.print),
-        label: const Text('Print Statement'),
+              itemBuilder: (context, index) {
+                final monthName = _monthName(index + 1);
+                return isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : RefreshIndicator(
+                  onRefresh: _loadFinanceData,
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      Text(
+                        '$monthName $selectedYear',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: themeColor,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      const SizedBox(height: 10),
+                      _buildSpentSummary(),
+                      const SizedBox(height: 20),
+                      _buildIncomeSummary(),
+                      const SizedBox(height: 20),
+                      _buildNetCashFlowWidget(),
+                      const SizedBox(height: 20),
+                      _buildTotalBalanceOverview(),
+                      const SizedBox(height: 30),
+                      Text('Tools', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(height: 10),
+                      ListTile(
+                        leading: const Icon(Icons.picture_as_pdf),
+                        title: const Text('Print Statement'),
+                        onTap: _openPrintDialog,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildBalanceSummary() {
+  String _monthName(int month) =>
+      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month - 1];
+
+  Widget _buildSpentSummary() {
+    double totalExpense = double.tryParse(summary['total_expense']?.toString() ?? '0') ?? 0.0;
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Spent', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            const SizedBox(height: 8),
+            Text('£${totalExpense.toStringAsFixed(2)}',
+                style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIncomeSummary() {
+    double totalIncome = double.tryParse(summary['total_income']?.toString() ?? '0') ?? 0.0;
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Income', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            const SizedBox(height: 8),
+            Text('£${totalIncome.toStringAsFixed(2)}',
+                style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTotalBalanceOverview() {
     double totalIncome = double.tryParse(summary['total_income']?.toString() ?? '0') ?? 0.0;
     double totalExpense = double.tryParse(summary['total_expense']?.toString() ?? '0') ?? 0.0;
     double balance = totalIncome - totalExpense;
@@ -109,94 +189,17 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Current Balance', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            Text('Total Balance', style: GoogleFonts.montserrat(color: Colors.grey[600])),
             const SizedBox(height: 8),
             Text('£${balance.toStringAsFixed(2)}',
-                style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // -------------------- BAR CHART ----------------------
-  Widget _buildAnimatedBarChart() {
-    double totalIncome = double.tryParse(summary['total_income']?.toString() ?? '0') ?? 0;
-    double totalExpense = double.tryParse(summary['total_expense']?.toString() ?? '0') ?? 0;
-
-    return SizedBox(
-      height: 250,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: (totalIncome > totalExpense ? totalIncome : totalExpense) * 1.4,
-          barTouchData: BarTouchData(enabled: true),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: true, reservedSize: 40),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, _) {
-                  switch (value.toInt()) {
-                    case 0:
-                      return const Text('Income');
-                    case 1:
-                      return const Text('Expense');
-                    default:
-                      return const Text('');
-                  }
-                },
-              ),
-            ),
-          ),
-          borderData: FlBorderData(show: false),
-          barGroups: [
-            BarChartGroupData(x: 0, barRods: [
-              BarChartRodData(
-                  toY: totalIncome,
-                  width: 30,
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8))
-            ]),
-            BarChartGroupData(x: 1, barRods: [
-              BarChartRodData(
-                  toY: totalExpense,
-                  width: 30,
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(8))
-            ]),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // -------------------- DONUT CHART ----------------------
-  Widget _buildDonutChart() {
-    double totalIncome = double.tryParse(summary['total_income']?.toString() ?? '0') ?? 0;
-    double totalExpense = double.tryParse(summary['total_expense']?.toString() ?? '0') ?? 0;
-
-    return SizedBox(
-      height: 220,
-      child: PieChart(
-        PieChartData(
-          centerSpaceRadius: 50,
-          sections: [
-            PieChartSectionData(
-              value: totalIncome,
-              color: Colors.green,
-              title: 'Income',
-              radius: 50,
-              titleStyle: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            PieChartSectionData(
-              value: totalExpense,
-              color: Colors.red,
-              title: 'Expense',
-              radius: 50,
-              titleStyle: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold),
+                style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.bold, color: themeColor)),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Container(width: 12, height: 12, decoration: BoxDecoration(color: themeColor, shape: BoxShape.circle)),
+                const SizedBox(width: 8),
+                Text('Cash', style: GoogleFonts.montserrat(fontSize: 14))
+              ],
             ),
           ],
         ),
@@ -204,146 +207,62 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
     );
   }
 
-  // -------------------- FILTER BUTTONS ----------------------
-  Widget _buildFilterButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _filterButton('All', 'all'),
-        _filterButton('Income', 'income'),
-        _filterButton('Expense', 'expense'),
+  Widget _buildNetCashFlowWidget() {
+    double totalIncome = double.tryParse(summary['total_income']?.toString() ?? '0') ?? 0.0;
+    double totalExpense = double.tryParse(summary['total_expense']?.toString() ?? '0') ?? 0.0;
+    double netFlow = totalIncome - totalExpense;
+
+    return SfCartesianChart(
+      primaryXAxis: CategoryAxis(),
+      title: ChartTitle(text: 'Net Cashflow'),
+      series: <CartesianSeries<dynamic, dynamic>>[
+        ColumnSeries<dynamic, String>(
+          dataSource: [
+            ChartData('Income', totalIncome),
+            ChartData('Expenses', totalExpense),
+            ChartData('Net', netFlow),
+          ],
+          xValueMapper: (data, _) => data.label,
+          yValueMapper: (data, _) => data.value,
+          pointColorMapper: (data, _) => data.label == 'Net'
+              ? Colors.blue
+              : (data.label == 'Income' ? Colors.green : Colors.red),
+          dataLabelSettings: const DataLabelSettings(isVisible: true),
+        )
       ],
     );
   }
 
-  Widget _filterButton(String label, String value) {
-    final bool isSelected = filter == value;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: OutlinedButton(
-        onPressed: () => setState(() => filter = value),
-        style: OutlinedButton.styleFrom(
-            side: BorderSide(color: isSelected ? themeColor : Colors.grey),
-            backgroundColor: isSelected ? themeColor.withOpacity(0.1) : Colors.transparent),
-        child: Text(label,
-            style: GoogleFonts.montserrat(
-                color: isSelected ? themeColor : Colors.grey[700], fontWeight: FontWeight.bold)),
-      ),
-    );
-  }
-
-  // -------------------- TRANSACTIONS ----------------------
-  Widget _buildTransactionTile(dynamic txn) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: txn['type'] == 'income' ? Colors.green[100] : Colors.red[100],
-        child: Icon(txn['type'] == 'income' ? Icons.arrow_downward : Icons.arrow_upward,
-            color: txn['type'] == 'income' ? Colors.green : Colors.red),
-      ),
-      title: Text(
-        "£${txn['amount']}",
-        style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text("${txn['type'].toUpperCase()} | ${txn['payment_method'] ?? 'N/A'}"),
-      trailing: Text(txn['date'].toString().split('T')[0]),
-    );
-  }
-
-  // -------------------- PRINT DIALOG ----------------------
   void _openPrintDialog() {
-    DateTime? fromDate;
-    DateTime? toDate;
-    String format = 'pdf';
-
     showDialog(
       context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: const Text('Export Statement'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text(fromDate != null
-                      ? fromDate.toString().split(' ')[0]
-                      : 'Select From Date'),
-                  trailing: const Icon(Icons.calendar_today),
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now().subtract(const Duration(days: 30)),
-                      firstDate: DateTime(2023),
-                      lastDate: DateTime.now(),
-                    );
-                    if (picked != null) setState(() => fromDate = picked);
-                  },
-                ),
-                ListTile(
-                  title: Text(toDate != null
-                      ? toDate.toString().split(' ')[0]
-                      : 'Select To Date'),
-                  trailing: const Icon(Icons.calendar_today),
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2023),
-                      lastDate: DateTime.now(),
-                    );
-                    if (picked != null) setState(() => toDate = picked);
-                  },
-                ),
-                const SizedBox(height: 10),
-                DropdownButtonFormField(
-                  value: format,
-                  items: const [
-                    DropdownMenuItem(value: 'pdf', child: Text('PDF')),
-                    DropdownMenuItem(value: 'excel', child: Text('Excel')),
-                  ],
-                  onChanged: (val) => setState(() => format = val as String),
-                  decoration: const InputDecoration(labelText: 'Select Format'),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (fromDate != null && toDate != null) {
-                    Navigator.pop(context);
-                    _exportStatement(fromDate!, toDate!, format);
-                  } else {
-                    AppDialog.showWarningDialog(
-                      context,
-                      title: 'Select Dates',
-                      message: 'Please select both From and To dates.',
-                    );
-                  }
-                },
-                child: const Text('Export'),
-              ),
-            ],
-          );
-        },
+      builder: (context) => AlertDialog(
+        title: const Text('Export Finance Statement'),
+        content: const Text('Would you like to export the statement as PDF or Excel?'),
+        actions: [
+          TextButton(
+            onPressed: () => _exportStatement('pdf'),
+            child: const Text('PDF'),
+          ),
+          TextButton(
+            onPressed: () => _exportStatement('excel'),
+            child: const Text('Excel'),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _exportStatement(
-      DateTime fromDate, DateTime toDate, String format) async {
-    AppDialog.showLoadingDialog(context, message: 'Generating Statement...');
+  Future<void> _exportStatement(String format) async {
+    final now = DateTime.now();
+    final fromDate = DateTime(now.year, 1, 1);
+    final toDate = DateTime(now.year, now.month, 31);
 
     final success = await _authService.exportFinanceStatement(
       fromDate: fromDate,
       toDate: toDate,
       format: format,
     );
-
-    Navigator.pop(context); // Close loading dialog
 
     if (success) {
       AppDialog.showSuccessDialog(
@@ -358,6 +277,13 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         message: 'Unable to generate statement. Please try again.',
       );
     }
-  }
 
+  }
+}
+
+class ChartData {
+  final String label;
+  final double value;
+
+  ChartData(this.label, this.value);
 }

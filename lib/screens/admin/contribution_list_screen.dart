@@ -208,7 +208,7 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: themeColor,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
           final result = await Navigator.pushNamed(context, '/addContribution');
           if (result == true) fetchContributions();
@@ -322,6 +322,8 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
       child: Text(label, style: GoogleFonts.montserrat(color: color, fontWeight: FontWeight.w600, fontSize: 12)),
     );
   }
+
+
 }
 
 String capitalize(String text) => text.isNotEmpty ? '${text[0].toUpperCase()}${text.substring(1)}' : '';

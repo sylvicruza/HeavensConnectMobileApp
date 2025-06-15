@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+6
+version: 1.0.0+7
 
 environment:
   sdk: '>=3.4.4 <4.0.0'
@@ -36,6 +36,7 @@ dependencies:
   logger: ^1.4.0
   flutter_secure_storage: ^5.0.2  # To store JWT token securely
   shared_preferences: ^2.0.15
+  provider: ^6.1.2
   image_picker: ^1.0.7
   fl_chart: ^0.64.0
   flutter_speed_dial: ^7.0.0
@@ -46,6 +47,9 @@ dependencies:
   shimmer: ^3.0.0
   file_picker: ^5.5.0
   flutter_svg: ^2.0.7
+  syncfusion_flutter_charts: ^24.1.41
+
+
 
 
 
@@ -94,10 +98,12 @@ flutter:
   - images/purple-moon-heaven-sky-clouds.png
   - assets/animations/success.json
   - assets/animations/loading.json
+  - assets/animations/loading2.json
   - assets/animations/warning.json
   - assets/animations/warning1.json
   - assets/icons/volunteer_heart_icon.svg
   - assets/icons/hc_logo_trans.svg
+  - assets/icons/white_app_icon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

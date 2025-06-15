@@ -6,4 +6,6 @@ class SettingKeys {
   static const categories = 'categories';
   static const years = 'years';
   static const adminRoles = 'admin_roles';
+  static const contactSupport = 'contact_support';
+  static const bankAccount = 'bank_account';
 }

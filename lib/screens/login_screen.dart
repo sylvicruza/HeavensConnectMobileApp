@@ -117,11 +117,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 scale: _fadeAnimation,
                 child: Column(
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/volunteer_heart_icon.svg',
-                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    Image.asset(
+                      'assets/icons/white_app_icon.png',
                       width: 90,
                       height: 90,
+                      fit: BoxFit.contain,
                     ),
                     Text(
                       'Heavens Connect',
