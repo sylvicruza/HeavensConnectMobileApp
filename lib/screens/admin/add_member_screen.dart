@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/setting_keys.dart';
 
 class AddMemberScreen extends StatefulWidget {
@@ -95,10 +96,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Add Member', style: GoogleFonts.montserrat(color: themeColor)),
+        title: Text('Add Member', style: montserratTextStyle(color: themeColor)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -140,7 +141,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
       validator: required ? (value) => value == null || value.isEmpty ? 'Required' : null : null,
     );
@@ -164,7 +165,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       decoration: InputDecoration(
         labelText: 'Status',
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
     );
   }
@@ -201,7 +202,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         elevation: 4,
         backgroundColor: themeColor,
       ),
-      child: Text('Submit', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+      child: Text('Submit', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
     );
   }
 

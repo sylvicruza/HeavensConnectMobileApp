@@ -109,7 +109,7 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text('Filter Contributions', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text('Filter Contributions', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               _buildDropdown(statusOptions, selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
               const SizedBox(height: 12),
@@ -137,11 +137,9 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
                   ),
                   child: Text(
                     'Apply Filters',
-                    style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                    style: montserratTextStyle(color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                      fontSize: 16,),
                   ),
                 ),
               ),
@@ -161,17 +159,17 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Contributions', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
+        title: Text('Contributions', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
         actions: [
           TextButton.icon(
             onPressed: _showFilterSheet,
             icon: const Icon(Icons.filter_list),
-            label: Text('Filter', style: GoogleFonts.montserrat(color: themeColor)),
+            label: Text('Filter', style: montserratTextStyle(color: themeColor)),
           ),
         ],
       ),
@@ -194,7 +192,7 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
           ),
           Expanded(
             child: contributions.isEmpty
-                ? Center(child: Text('No contributions found', style: GoogleFonts.montserrat()))
+                ? Center(child: Text('No contributions found', style: montserratTextStyle()))
                 : ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: contributions.length,
@@ -282,14 +280,14 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
-        title: Text(memberName, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text(memberName, style: montserratTextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text('£$amount', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w500)),
-            Text('Payment: ${capitalize(paymentMethod)}', style: GoogleFonts.montserrat(fontSize: 12)),
-            Text('Date: ${createdAt.split("T")[0]}', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey)),
+            Text('£$amount', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.w500)),
+            Text('Payment: ${capitalize(paymentMethod)}', style: montserratTextStyle(fontSize: 12)),
+            Text('Date: ${createdAt.split("T")[0]}', style: montserratTextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
         trailing: _buildStatusBadge(status),
@@ -319,7 +317,7 @@ class _ContributionListScreenState extends State<ContributionListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-      child: Text(label, style: GoogleFonts.montserrat(color: color, fontWeight: FontWeight.w600, fontSize: 12)),
+      child: Text(label, style: montserratTextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 12)),
     );
   }
 

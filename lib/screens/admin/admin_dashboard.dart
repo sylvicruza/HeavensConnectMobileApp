@@ -75,7 +75,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: _buildAdminAppBar(),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -178,8 +178,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Total Balance',
-              style: GoogleFonts.montserrat(
-                  color: Colors.white70, fontSize: 14)),
+              style: montserratTextStyle(color: Colors.white70, fontSize: 14)),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -191,8 +190,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       ? "£${dashboardData!['balance']?.toStringAsFixed(2) ?? '0.00'}"
                       : "£••••",
                   key: ValueKey(showBalance),
-                  style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                  style: montserratTextStyle(color: Colors.white,
                       fontSize: 32,
                       fontWeight: FontWeight.bold),
                 ),
@@ -215,7 +213,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   PreferredSizeWidget _buildAdminAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.appBarColor,
       elevation: 0,
       toolbarHeight: 60,
       automaticallyImplyLeading: false,
@@ -239,19 +237,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
             children: [
               Text(
                 _greeting(),
-                style: GoogleFonts.montserrat(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
+                style: montserratTextStyle(color: Colors.grey[600],
+                  fontSize: 14,),
               ),
               const SizedBox(height: 4),
               Text(
                 'Admin',
-                style: GoogleFonts.montserrat(
-                  color: themeColor,
+                style: montserratTextStyle(color: themeColor,
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                  fontWeight: FontWeight.bold,),
               ),
             ],
           ),
@@ -342,7 +336,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.montserrat(fontSize: 14, color: Colors.grey[800]),
+                  style: montserratTextStyle(fontSize: 14, color: Colors.grey[800]),
                 ),
                 const SizedBox(height: 4),
                 FittedBox(
@@ -350,10 +344,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     amount,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: montserratTextStyle(fontSize: 20,
+                      fontWeight: FontWeight.bold,),
                     maxLines: 1,
                   ),
                 ),
@@ -413,11 +405,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
       child: ListTile(
         leading: Icon(icon, color: themeColor),
         title: Text(label,
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w500, fontSize: 16)),
+            style: montserratTextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
         subtitle: Text("Total: $value",
-            style: GoogleFonts.montserrat(
-                fontSize: 12, color: Colors.grey[600])),
+            style: montserratTextStyle(fontSize: 12, color: Colors.grey[600])),
         trailing:
         const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         onTap: () => Navigator.pushNamed(context, route),

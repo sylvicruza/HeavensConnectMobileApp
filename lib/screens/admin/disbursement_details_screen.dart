@@ -20,12 +20,12 @@ class AdminDisbursementDetailScreen extends StatelessWidget {
     final attachmentUrl = disbursement['attachment'];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Disbursement Detail', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text('Disbursement Detail', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -60,9 +60,9 @@ class AdminDisbursementDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(label, style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.montserrat(fontSize: 14), textAlign: TextAlign.start),
+          Text(value, style: montserratTextStyle(fontSize: 14), textAlign: TextAlign.start),
         ],
       ),
     );
@@ -79,7 +79,7 @@ class AdminDisbursementDetailScreen extends StatelessWidget {
         children: [
           const Icon(Icons.attach_file, color: Colors.grey),
           const SizedBox(width: 6),
-          Text('View Attachment', style: GoogleFonts.montserrat(color: color, decoration: TextDecoration.underline)),
+          Text('View Attachment', style: montserratTextStyle(color: color, decoration: TextDecoration.underline)),
         ],
       ),
     );

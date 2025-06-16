@@ -109,11 +109,11 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
         title: Text('Add Contribution',
-            style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+            style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
       ),
       body: ListView(
@@ -168,8 +168,7 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text('Submit Contribution',
-                style: GoogleFonts.montserrat(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+                style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ),
       ),
@@ -190,8 +189,7 @@ class _AddContributionScreenState extends State<AddContributionScreen> {
 
   Widget _sectionTitle(String title) {
     return Text(title,
-        style: GoogleFonts.montserrat(
-            fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[800]));
+        style: montserratTextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[800]));
   }
 
   Widget _buildMemberDropdown() {

@@ -44,12 +44,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final themeColor = AppTheme.themeColor;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
         title: Text('Notifications',
-            style: GoogleFonts.montserrat(
-                color: themeColor, fontWeight: FontWeight.bold)),
+            style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -57,7 +56,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ? Center(
         child: Text(
           'No notifications',
-          style: GoogleFonts.montserrat(color: Colors.grey),
+          style: montserratTextStyle(color: Colors.grey),
         ),
       )
           : RefreshIndicator(
@@ -78,7 +77,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
                     leading: Icon(Icons.notifications, color: themeColor.withOpacity(0.7)),
-                    title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+                    title: Text(title, style: montserratTextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text(message),
                     trailing: isRead
                         ? null

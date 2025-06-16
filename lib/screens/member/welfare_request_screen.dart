@@ -82,8 +82,8 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F7),
       appBar: AppBar(
-        title: Text('Welfare Request', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Welfare Request', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
       ),
@@ -129,7 +129,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
             children: [
               Icon(categoryIcons[c] ?? Icons.category, color: themeColor, size: 20),
               const SizedBox(width: 8),
-              Text(c.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.montserrat()),
+              Text(c.replaceAll('_', ' ').toUpperCase(), style: montserratTextStyle()),
             ],
           ),
         );
@@ -138,7 +138,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
       onChanged: (value) => setState(() => selectedCategory = value!),
       decoration: InputDecoration(
         labelText: 'Select Category',
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
         prefixIcon: Icon(Icons.category, color: themeColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -163,10 +163,10 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
       controller: controller,
       keyboardType: inputType,
       maxLines: maxLines,
-      style: GoogleFonts.montserrat(),
+      style: montserratTextStyle(),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.montserrat(color: Colors.grey[600]),
+        hintStyle: montserratTextStyle(color: Colors.grey[600]),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -190,7 +190,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Attachment (optional)', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        Text('Attachment (optional)', style: montserratTextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -201,7 +201,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               icon: const Icon(Icons.upload_file, color: Colors.white),
-              label: Text('Upload', style: GoogleFonts.montserrat(color: Colors.white)),
+              label: Text('Upload', style: montserratTextStyle(color: Colors.white)),
             ),
             const SizedBox(width: 12),
             if (attachment != null)
@@ -209,7 +209,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
                 children: [
                   const Icon(Icons.check_circle, color: Colors.green, size: 20),
                   const SizedBox(width: 6),
-                  Text('File Selected', style: GoogleFonts.montserrat(color: Colors.green)),
+                  Text('File Selected', style: montserratTextStyle(color: Colors.green)),
                 ],
               ),
           ],
@@ -231,7 +231,7 @@ class _MemberWelfareRequestScreenState extends State<MemberWelfareRequestScreen>
         child: Center(
           child: isSubmitting
               ? const CircularProgressIndicator(color: Colors.white)
-              : Text('Submit Request', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+              : Text('Submit Request', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
       ),
     );

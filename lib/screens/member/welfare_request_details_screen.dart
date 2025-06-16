@@ -52,12 +52,12 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         elevation: 0,
-        title: Text('Welfare Request', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text('Welfare Request', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -102,11 +102,11 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(label, style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           const SizedBox(height: 4),
           Text(
             value,
-            style: GoogleFonts.montserrat(fontSize: 14),
+            style: montserratTextStyle(fontSize: 14),
             textAlign: TextAlign.start,
             softWrap: true,
           ),
@@ -126,7 +126,7 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
         children: [
           const Icon(Icons.attach_file, color: Colors.grey),
           const SizedBox(width: 6),
-          Text('View Attachment', style: GoogleFonts.montserrat(color: themeColor, decoration: TextDecoration.underline)),
+          Text('View Attachment', style: montserratTextStyle(color: themeColor, decoration: TextDecoration.underline)),
         ],
       ),
     );
@@ -140,7 +140,7 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
           gradient: LinearGradient(colors: [color.withOpacity(0.7), color]),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(status, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: Text(status, style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -179,7 +179,7 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
       child: Center(
         child: isDeleting && text == 'Delete'
             ? const CircularProgressIndicator(color: Colors.white)
-            : Text(text, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+            : Text(text, style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -188,14 +188,14 @@ class _MemberWelfareRequestDetailScreenState extends State<MemberWelfareRequestD
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Delete', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-        content: Text('Are you sure you want to delete this request?', style: GoogleFonts.montserrat()),
+        title: Text('Confirm Delete', style: montserratTextStyle(fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to delete this request?', style: montserratTextStyle()),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.montserrat())),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: montserratTextStyle())),
           ElevatedButton(
             onPressed: _deleteRequest,
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('Delete', style: GoogleFonts.montserrat(color: Colors.white)),
+            child: Text('Delete', style: montserratTextStyle(color: Colors.white)),
           ),
         ],
       ),

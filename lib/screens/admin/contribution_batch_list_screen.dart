@@ -35,15 +35,15 @@ class _ContributionBatchListScreenState extends State<ContributionBatchListScree
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pending Contribution Batches', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Pending Contribution Batches', style: montserratTextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : batches.isEmpty
-          ? Center(child: Text('No pending batches.', style: GoogleFonts.montserrat()))
+          ? Center(child: Text('No pending batches.', style: montserratTextStyle()))
           : ListView.builder(
         itemCount: batches.length,
         padding: const EdgeInsets.all(16),
@@ -54,14 +54,14 @@ class _ContributionBatchListScreenState extends State<ContributionBatchListScree
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             margin: const EdgeInsets.only(bottom: 16),
             child: ListTile(
-              title: Text(batch['member_name'], style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+              title: Text(batch['member_name'], style: montserratTextStyle(fontWeight: FontWeight.bold)),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 4),
                   Text("£${batch['total_amount']} across ${batch['months'].length} months",
-                      style: GoogleFonts.montserrat()),
-                  Text("Months: ${batch['months'].join(', ')}", style: GoogleFonts.montserrat(fontSize: 12)),
+                      style: montserratTextStyle()),
+                  Text("Months: ${batch['months'].join(', ')}", style: montserratTextStyle(fontSize: 12)),
                 ],
               ),
               trailing: Icon(Icons.chevron_right, color: themeColor),

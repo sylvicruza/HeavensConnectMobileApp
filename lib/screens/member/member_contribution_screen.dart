@@ -112,11 +112,11 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
           children: [
             Container(width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(12))),
             const SizedBox(height: 20),
-            Text('Contribution Instructions', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 20)),
+            Text('Contribution Instructions', style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             const SizedBox(height: 16),
             Text.rich(
               TextSpan(
-                style: GoogleFonts.montserrat(height: 1.5),
+                style: montserratTextStyle(height: 1.5),
                 children: [
                   const TextSpan(text: '\u2022 This form is ONLY for transfers. For '),
                   TextSpan(text: 'cash payments', style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -138,10 +138,10 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: const Color(0xFFF9F9FB),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        title: Text('Submit Contribution', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Submit Contribution', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
       ),
@@ -190,7 +190,7 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   elevation: 5,
                 ),
-                child: Text('Submit Contribution', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: Text('Submit Contribution', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             )
           ],
@@ -203,10 +203,10 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
     return TextField(
       controller: controller,
       keyboardType: inputType,
-      style: GoogleFonts.montserrat(),
+      style: montserratTextStyle(),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.montserrat(color: themeColor),
+        labelStyle: montserratTextStyle(color: themeColor),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -232,7 +232,7 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
       onChanged: (val) => onChanged(val!),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.montserrat(color: themeColor),
+        labelStyle: montserratTextStyle(color: themeColor),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -260,14 +260,14 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Proof of Payment (required)', style: GoogleFonts.montserrat(fontWeight: FontWeight.w600)),
+        Text('Proof of Payment (required)', style: montserratTextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
         Row(
           children: [
             ElevatedButton(
               onPressed: pickProofOfPayment,
               style: ElevatedButton.styleFrom(backgroundColor: themeColor),
-              child: Text('Upload Image', style: GoogleFonts.montserrat(color: Colors.white)),
+              child: Text('Upload Image', style: montserratTextStyle(color: Colors.white)),
             ),
             const SizedBox(width: 12),
             if (proofOfPayment != null)
@@ -298,16 +298,16 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Transfer Only', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text('Transfer Only', style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                 const SizedBox(height: 4),
                 Text(
                   'This form is for transfers ONLY. For cash payments, please hand over to the admin directly. Need help?',
-                  style: GoogleFonts.montserrat(fontSize: 13),
+                  style: montserratTextStyle(fontSize: 13),
                 ),
                 const SizedBox(height: 6),
                 GestureDetector(
                   onTap: _showHelpModal,
-                  child: Text('See instructions', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w500)),
+                  child: Text('See instructions', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.w500)),
                 ),
               ],
             ),
@@ -328,7 +328,7 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Confirm Contribution', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text('Confirm Contribution', style: montserratTextStyle(fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,12 +343,12 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel', style: GoogleFonts.montserrat(color: Colors.grey)),
+            child: Text('Cancel', style: montserratTextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: themeColor),
-            child: Text('Confirm', style: GoogleFonts.montserrat(color: Colors.white)),
+            child: Text('Confirm', style: montserratTextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -365,9 +365,9 @@ class _MemberContributionScreenState extends State<MemberContributionScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 2, child: Text(label, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500))),
+          Expanded(flex: 2, child: Text(label, style: montserratTextStyle(fontWeight: FontWeight.w500))),
           const SizedBox(width: 8),
-          Expanded(flex: 3, child: Text(value, style: GoogleFonts.montserrat())),
+          Expanded(flex: 3, child: Text(value, style: montserratTextStyle())),
         ],
       ),
     );

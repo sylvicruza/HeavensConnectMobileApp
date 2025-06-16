@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
+import '../../utils/app_theme.dart';
 import '../../widgets/admin_bottom_nav.dart';
 import 'edit_member_screen.dart';
 import 'view_member_screen.dart';
@@ -71,8 +72,8 @@ class _AllMembersScreenState extends State<AllMembersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Members', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
-        backgroundColor: Colors.white,
+        title: Text('All Members', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
       ),
@@ -138,8 +139,8 @@ class _AllMembersScreenState extends State<AllMembersScreen> {
                             style: TextStyle(color: themeColor, fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        title: Text(member['full_name'], style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16)),
-                        subtitle: Text(member['phone_number'], style: GoogleFonts.montserrat(color: Colors.grey.shade600)),
+                        title: Text(member['full_name'], style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        subtitle: Text(member['phone_number'], style: montserratTextStyle(color: Colors.grey.shade600)),
                         trailing: PopupMenuButton<String>(
                           onSelected: (value) async {
                             if (value == 'view') {
@@ -180,7 +181,7 @@ class _AllMembersScreenState extends State<AllMembersScreen> {
         },
       ),
       bottomNavigationBar: const AdminBottomNavBar(),
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppTheme.lightBackground,
     );
   }
 }

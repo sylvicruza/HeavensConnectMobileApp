@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_dialog.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/setting_keys.dart';
 
 class EditMemberScreen extends StatefulWidget {
@@ -76,8 +77,8 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Member', style: GoogleFonts.montserrat()),
-        backgroundColor: Colors.white,
+        title: Text('Edit Member', style: montserratTextStyle()),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
       ),
@@ -120,7 +121,7 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
     );
   }
@@ -142,7 +143,7 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
       decoration: InputDecoration(
         labelText: 'Status',
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
     );
   }
@@ -156,7 +157,7 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
         elevation: 4,
         backgroundColor: themeColor,
       ),
-      child: Text('Save Changes', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+      child: Text('Save Changes', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
     );
   }
 }

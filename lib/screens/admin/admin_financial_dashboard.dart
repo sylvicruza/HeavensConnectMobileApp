@@ -63,10 +63,10 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        title: Text('Analytics', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
-        backgroundColor: Colors.white,
+        title: Text('Analytics', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         actions: [
           IconButton(
@@ -97,11 +97,9 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
                     children: [
                       Text(
                         '$monthName $selectedYear',
-                        style: GoogleFonts.montserrat(
-                          fontSize: 18,
+                        style: montserratTextStyle(fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: themeColor,
-                        ),
+                          color: themeColor,),
                         textAlign: TextAlign.right,
                       ),
                       const SizedBox(height: 10),
@@ -113,9 +111,11 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
                       const SizedBox(height: 20),
                       _buildTotalBalanceOverview(),
                       const SizedBox(height: 30),
-                      Text('Tools', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 18)),
+                      Text('Tools', style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: themeColor)),
                       const SizedBox(height: 10),
                       ListTile(
+                        iconColor: themeColor,
+                        textColor: themeColor,
                         leading: const Icon(Icons.picture_as_pdf),
                         title: const Text('Print Statement'),
                         onTap: _openPrintDialog,
@@ -145,10 +145,10 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Spent', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            Text('Spent', style: montserratTextStyle(color: Colors.grey[600])),
             const SizedBox(height: 8),
             Text('£${totalExpense.toStringAsFixed(2)}',
-                style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red)),
+                style: montserratTextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red)),
           ],
         ),
       ),
@@ -166,10 +166,10 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Income', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            Text('Income', style: montserratTextStyle(color: Colors.grey[600])),
             const SizedBox(height: 8),
             Text('£${totalIncome.toStringAsFixed(2)}',
-                style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green)),
+                style: montserratTextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green)),
           ],
         ),
       ),
@@ -189,16 +189,16 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Total Balance', style: GoogleFonts.montserrat(color: Colors.grey[600])),
+            Text('Total Balance', style: montserratTextStyle(color: Colors.grey[600])),
             const SizedBox(height: 8),
             Text('£${balance.toStringAsFixed(2)}',
-                style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.bold, color: themeColor)),
+                style: montserratTextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: themeColor)),
             const SizedBox(height: 10),
             Row(
               children: [
                 Container(width: 12, height: 12, decoration: BoxDecoration(color: themeColor, shape: BoxShape.circle)),
                 const SizedBox(width: 8),
-                Text('Cash', style: GoogleFonts.montserrat(fontSize: 14))
+                Text('Cash', style: montserratTextStyle(fontSize: 14))
               ],
             ),
           ],
@@ -234,35 +234,94 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
   }
 
   void _openPrintDialog() {
+    DateTime? fromDate;
+    DateTime? toDate;
+    String format = 'pdf';
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Finance Statement'),
-        content: const Text('Would you like to export the statement as PDF or Excel?'),
-        actions: [
-          TextButton(
-            onPressed: () => _exportStatement('pdf'),
-            child: const Text('PDF'),
-          ),
-          TextButton(
-            onPressed: () => _exportStatement('excel'),
-            child: const Text('Excel'),
-          ),
-        ],
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Export Statement'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text(fromDate != null ? fromDate.toString().split(' ')[0] : 'Select From Date'),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now().subtract(const Duration(days: 30)),
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null) setState(() => fromDate = picked);
+                  },
+                ),
+                ListTile(
+                  title: Text(toDate != null ? toDate.toString().split(' ')[0] : 'Select To Date'),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null) setState(() => toDate = picked);
+                  },
+                ),
+                const SizedBox(height: 10),
+                DropdownButtonFormField(
+                  value: format,
+                  items: const [
+                    DropdownMenuItem(value: 'pdf', child: Text('PDF')),
+                    DropdownMenuItem(value: 'excel', child: Text('Excel')),
+                  ],
+                  onChanged: (val) => setState(() => format = val as String),
+                  decoration: const InputDecoration(labelText: 'Select Format'),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (fromDate != null && toDate != null) {
+                    Navigator.pop(context);
+                    _exportStatement(fromDate!, toDate!, format);
+                  } else {
+                    AppDialog.showWarningDialog(
+                      context,
+                      title: 'Select Dates',
+                      message: 'Please select both From and To dates.',
+                    );
+                  }
+                },
+                child: const Text('Export'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Future<void> _exportStatement(String format) async {
-    final now = DateTime.now();
-    final fromDate = DateTime(now.year, 1, 1);
-    final toDate = DateTime(now.year, now.month, 31);
+  Future<void> _exportStatement(DateTime fromDate, DateTime toDate, String format) async {
+    AppDialog.showLoadingDialog(context, message: 'Generating Statement...');
 
     final success = await _authService.exportFinanceStatement(
       fromDate: fromDate,
       toDate: toDate,
       format: format,
     );
+
+    Navigator.pop(context);
 
     if (success) {
       AppDialog.showSuccessDialog(
@@ -277,8 +336,8 @@ class _AdminFinanceDashboardScreenState extends State<AdminFinanceDashboardScree
         message: 'Unable to generate statement. Please try again.',
       );
     }
-
   }
+
 }
 
 class ChartData {

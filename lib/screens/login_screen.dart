@@ -126,20 +126,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     Text(
                       'Heavens Connect',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 28,
+                      style: montserratTextStyle(fontSize: 28,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        fontWeight: FontWeight.bold,),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'The Welfare App',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 14,
+                      style: montserratTextStyle(fontSize: 14,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white70,
-                      ),
+                        color: Colors.white70,),
                     ),
                   ],
                 ),
@@ -170,20 +166,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   children: [
                     Text(
                       'Welcome back',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 20,
+                      style: montserratTextStyle(fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: primaryColor,
-                      ),
+                        color: primaryColor,),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       'Login to continue',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 15,
+                      style: montserratTextStyle(fontSize: 15,
                         color: Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
-                      ),
+                        fontWeight: FontWeight.w500,),
                     ),
                     const SizedBox(height: 20),
                     _buildTextField(_usernameController, 'Username', Icons.person),
@@ -196,11 +188,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         onPressed: () => Navigator.pushNamed(context, '/forgotPassword'),
                         child: Text(
                           'Forgot Password?',
-                          style: GoogleFonts.montserrat(
-                            color: primaryColor,
+                          style: montserratTextStyle(color: primaryColor,
                             fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
+                            fontWeight: FontWeight.w500,),
                         ),
                       ),
                     ),
@@ -233,11 +223,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         alignment: Alignment.center,
                         child: Text(
                           'Login',
-                          style: GoogleFonts.montserrat(
-                            color: Colors.white,
+                          style: montserratTextStyle(color: Colors.white,
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+                            fontSize: 16,),
                         ),
                       ),
                     ),
@@ -250,10 +238,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             Navigator.pushNamed(context, '/requestMembership'),
                         child: Text(
                           "Don't have an account? Request Membership",
-                          style: GoogleFonts.montserrat(
-                            color: primaryColor,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: montserratTextStyle(color: primaryColor,
+                            fontWeight: FontWeight.w500,),
                         ),
                       ),
                     ),

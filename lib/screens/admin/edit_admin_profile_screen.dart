@@ -36,14 +36,13 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
         title: Text('Edit Profile',
-            style: GoogleFonts.montserrat(
-                color: themeColor, fontWeight: FontWeight.bold)),
+            style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -87,7 +86,7 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
       validator: required
           ? (val) => val == null || val.isEmpty ? 'Required' : null
@@ -106,8 +105,7 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
       child: isProcessing
           ? const CircularProgressIndicator(color: Colors.white)
           : Text('Save Changes',
-          style: GoogleFonts.montserrat(
-              color: Colors.white, fontWeight: FontWeight.bold)),
+          style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
     );
   }
 

@@ -24,17 +24,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text(
           'Change Password',
-          style: GoogleFonts.montserrat(
-            color: themeColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: montserratTextStyle(color: themeColor,
+            fontWeight: FontWeight.bold,),
         ),
       ),
       body: SingleChildScrollView(
@@ -66,8 +64,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     ),
                     child: Text(
                       'Update Password',
-                      style: GoogleFonts.montserrat(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -99,8 +96,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 12),
               Text(
                 'Secure your account',
-                style: GoogleFonts.montserrat(
-                    fontSize: 18,
+                style: montserratTextStyle(fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: themeColor),
               ),
@@ -108,8 +104,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               Text(
                 'Change your password regularly to protect your account.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.montserrat(
-                    fontSize: 14, color: Colors.black54),
+                style: montserratTextStyle(fontSize: 14, color: Colors.black54),
               ),
             ],
           ),

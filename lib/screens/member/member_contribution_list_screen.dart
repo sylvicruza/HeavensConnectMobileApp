@@ -86,7 +86,7 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
             children: [
               Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
               const SizedBox(height: 12),
-              Text('Filter Contributions', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text('Filter Contributions', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               _buildDropdown(statusOptions, tempStatus, (value) => tempStatus = value!, 'Status'),
               const SizedBox(height: 12),
@@ -118,7 +118,7 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text('Apply Filters', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               )
             ],
@@ -135,24 +135,24 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('My Contributions', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor, fontSize: 18)),
+        title: Text('My Contributions', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor, fontSize: 18)),
         actions: [
           TextButton.icon(
             onPressed: _showFilterSheet,
             icon: const Icon(Icons.filter_list),
-            label: Text('Filter', style: GoogleFonts.montserrat(color: themeColor)),
+            label: Text('Filter', style: montserratTextStyle(color: themeColor)),
           ),
         ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : contributions.isEmpty
-          ? Center(child: Text('No contributions found', style: GoogleFonts.montserrat()))
+          ? Center(child: Text('No contributions found', style: montserratTextStyle()))
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: contributions.length,
@@ -250,12 +250,12 @@ class _MemberContributionListScreenState extends State<MemberContributionListScr
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
       child: ListTile(
-        title: Text('£$amount - $month $year', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-        subtitle: Text('Payment: ${capitalize(paymentMethod)}', style: GoogleFonts.montserrat()),
+        title: Text('£$amount - $month $year', style: montserratTextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text('Payment: ${capitalize(paymentMethod)}', style: montserratTextStyle()),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-          child: Text(capitalize(status), style: GoogleFonts.montserrat(color: statusColor, fontWeight: FontWeight.w600)),
+          child: Text(capitalize(status), style: montserratTextStyle(color: statusColor, fontWeight: FontWeight.w600)),
         ),
         onTap: () {
           Navigator.push(

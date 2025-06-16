@@ -22,13 +22,13 @@ class MemberContributionDetailScreen extends StatelessWidget {
     final proofImageUrl = contribution['proof_of_payment'];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text('Contribution Details',
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
+            style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -40,7 +40,7 @@ class MemberContributionDetailScreen extends StatelessWidget {
           _detailTile('For Month', '$month $year'),
           _detailTile('Submitted On', createdAt),
           const SizedBox(height: 24),
-          Text('Proof of Payment', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text('Proof of Payment', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           proofImageUrl != null
               ? ClipRRect(
@@ -54,7 +54,7 @@ class MemberContributionDetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text('No proof of payment uploaded.',
-                style: GoogleFonts.montserrat(color: Colors.grey)),
+                style: montserratTextStyle(color: Colors.grey)),
           ),
         ],
       ),
@@ -77,10 +77,10 @@ class MemberContributionDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Amount', style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+              Text('Amount', style: montserratTextStyle(color: Colors.white70, fontSize: 14)),
               const SizedBox(height: 8),
               Text('£$amount',
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                  style: montserratTextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               _buildStatusBadge(status),
             ],
@@ -96,11 +96,11 @@ class MemberContributionDetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.grey)),
+          Text(label, style: montserratTextStyle(fontSize: 14, color: Colors.grey)),
           Flexible(
             child: Text(value,
                 textAlign: TextAlign.right,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600)),
+                style: montserratTextStyle(fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -126,7 +126,7 @@ class MemberContributionDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(color: color.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
       child: Text(capitalize(status),
-          style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12)),
+          style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12)),
     );
   }
 

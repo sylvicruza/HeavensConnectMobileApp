@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../services/auth_service.dart';
+import '../../utils/app_theme.dart';
 import '../../widgets/admin_bottom_nav.dart';
 
 class ViewMemberScreen extends StatefulWidget {
@@ -51,9 +52,8 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Member Details',
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.bold, color: themeColor)),
-        backgroundColor: Colors.white,
+            style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
         actions: [
@@ -93,11 +93,9 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
             ),
             const SizedBox(height: 12),
             Text(widget.member['full_name'],
-                style: GoogleFonts.montserrat(
-                    fontSize: 20, fontWeight: FontWeight.bold)),
+                style: montserratTextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Text('Member ID: ${widget.member['member_id']}',
-                style: GoogleFonts.montserrat(
-                    color: Colors.grey.shade600)),
+                style: montserratTextStyle(color: Colors.grey.shade600)),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -139,8 +137,7 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
               child: ListTile(
                 leading: Icon(Icons.lock_reset, color: themeColor),
                 title: Text('Reset Password',
-                    style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w500)),
+                    style: montserratTextStyle(fontWeight: FontWeight.w500)),
                 trailing:
                 const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
@@ -167,16 +164,14 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(value,
-                  style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                  style: montserratTextStyle(color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 4),
             FittedBox(
               child: Text(label,
-                  style: GoogleFonts.montserrat(
-                      color: Colors.white, fontSize: 12)),
+                  style: montserratTextStyle(color: Colors.white, fontSize: 12)),
             ),
           ],
         ),
@@ -207,13 +202,13 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+              style: montserratTextStyle(fontWeight: FontWeight.w500)),
           const Spacer(),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: GoogleFonts.montserrat(color: Colors.grey.shade700),
+              style: montserratTextStyle(color: Colors.grey.shade700),
               maxLines: label == 'Address' ? 2 : 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -248,8 +243,7 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
                   value: balance.toDouble(),
                   title: '${contributionPercent.toStringAsFixed(1)}%',
                   radius: 60,
-                  titleStyle: GoogleFonts.montserrat(
-                      color: Colors.white,
+                  titleStyle: montserratTextStyle(color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 14),
                 ),
@@ -258,8 +252,7 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
                   value: spent.toDouble(),
                   title: '${spentPercent.toStringAsFixed(1)}%',
                   radius: 60,
-                  titleStyle: GoogleFonts.montserrat(
-                      color: Colors.white,
+                  titleStyle: montserratTextStyle(color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 14),
                 ),
@@ -277,7 +270,7 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
         ),
         const SizedBox(height: 20),
         Text('Monthly Contribution Breakdown:',
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+            style: montserratTextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         ...contributions.map((c) {
           final month = c['month'] as int;
@@ -301,10 +294,9 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
             dense: true,
             contentPadding: EdgeInsets.zero,
             title: Text('${monthNames[month - 1]} $year',
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+                style: montserratTextStyle(fontWeight: FontWeight.w500)),
             trailing: Text('£$amount',
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold, color: themeColor)),
+                style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
           );
         }).toList(),
       ],
@@ -320,7 +312,7 @@ class _ViewMemberScreenState extends State<ViewMemberScreen> {
             decoration:
             BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 6),
-        Text(label, style: GoogleFonts.montserrat(fontSize: 12)),
+        Text(label, style: montserratTextStyle(fontSize: 12)),
       ],
     );
   }
@@ -354,7 +346,7 @@ class __ExpandableSectionState extends State<_ExpandableSection> {
             leading: Icon(widget.icon, color: widget.color),
             title: Text(widget.label,
                 style:
-                GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+                montserratTextStyle(fontWeight: FontWeight.w500)),
             trailing: Icon(
                 isExpanded
                     ? Icons.keyboard_arrow_up

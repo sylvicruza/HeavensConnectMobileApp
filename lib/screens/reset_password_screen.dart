@@ -37,17 +37,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text(
           'Reset Password',
-          style: GoogleFonts.montserrat(
-            color: themeColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: montserratTextStyle(color: themeColor,
+            fontWeight: FontWeight.bold,),
         ),
       ),
       body: SingleChildScrollView(
@@ -75,10 +73,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     child: Text(
                       'Reset Password',
-                      style: GoogleFonts.montserrat(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: montserratTextStyle(color: Colors.white,
+                        fontWeight: FontWeight.bold,),
                     ),
                   ),
                 ],
@@ -109,13 +105,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               const SizedBox(height: 12),
               Text(
                 'Set your new password',
-                style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold, color: themeColor),
+                style: montserratTextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: themeColor),
               ),
               const SizedBox(height: 6),
               Text(
                 'Enter your new password to complete the reset process.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.black54),
+                style: montserratTextStyle(fontSize: 14, color: Colors.black54),
               ),
             ],
           ),

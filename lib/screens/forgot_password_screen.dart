@@ -22,8 +22,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password', style: GoogleFonts.montserrat(color: themeColor)),
-        backgroundColor: Colors.white,
+        title: Text('Forgot Password', style: montserratTextStyle(color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         elevation: 1,
       ),
@@ -31,7 +31,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Enter your username or email', style: GoogleFonts.montserrat(fontSize: 16)),
+            Text('Enter your username or email', style: montserratTextStyle(fontSize: 16)),
             const SizedBox(height: 20),
             TextField(
               controller: _identifierController,
@@ -46,11 +46,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: themeColor),
               child: _isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : Text('Send Reset Link', style: GoogleFonts.montserrat(color: Colors.white)),
+                  : Text('Send Reset Link', style: montserratTextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 20),
             if (_message != null)
-              Text(_message!, style: GoogleFonts.montserrat(color: Colors.green)),
+              Text(_message!, style: montserratTextStyle(color: Colors.green)),
           ],
         ),
       ),

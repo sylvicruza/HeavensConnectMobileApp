@@ -37,14 +37,14 @@ class _EditMemberProfileScreenState extends State<EditMemberProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text(
           'Edit Profile',
-          style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor),
+          style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor),
         ),
       ),
       body: Padding(
@@ -84,11 +84,9 @@ class _EditMemberProfileScreenState extends State<EditMemberProfileScreen> {
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
                         'Save Changes',
-                        style: GoogleFonts.montserrat(
-                          color: Colors.white,
+                        style: montserratTextStyle(color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                          fontSize: 16,),
                       ),
                     ),
                   ),
@@ -104,11 +102,9 @@ class _EditMemberProfileScreenState extends State<EditMemberProfileScreen> {
   Widget _formSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.montserrat(
-        fontWeight: FontWeight.w600,
+      style: montserratTextStyle(fontWeight: FontWeight.w600,
         fontSize: 16,
-        color: Colors.grey[700],
-      ),
+        color: Colors.grey[700],),
     );
   }
 
@@ -128,7 +124,7 @@ class _EditMemberProfileScreenState extends State<EditMemberProfileScreen> {
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          style: GoogleFonts.montserrat(),
+          style: montserratTextStyle(),
           decoration: InputDecoration(
             labelText: label,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
