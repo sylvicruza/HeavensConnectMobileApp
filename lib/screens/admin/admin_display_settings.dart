@@ -83,7 +83,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
         builder: (context, setState) => AlertDialog(
           title: Text(
             'Edit ${key.replaceAll('_', ' ')}',
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+            style: montserratTextStyle(fontWeight: FontWeight.bold),
           ),
           content: SingleChildScrollView(
             child: ConstrainedBox(
@@ -167,7 +167,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text('Add New Setting', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+          title: Text('Add New Setting', style: montserratTextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -254,8 +254,8 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('System Settings', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
-        backgroundColor: Colors.white,
+        title: Text('System Settings', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
       ),
       floatingActionButton: FloatingActionButton(
@@ -296,8 +296,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                   children: [
                     Text(
                       key.replaceAll('_', ' ').toUpperCase(),
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.bold,
+                      style: montserratTextStyle(fontWeight: FontWeight.bold,
                         fontSize: 13,
                         color: themeColor.withOpacity(0.8),
                       ),
@@ -308,7 +307,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                       runSpacing: 8,
                       children: values.map<Widget>((v) {
                         return Chip(
-                          label: Text(v, style: GoogleFonts.montserrat(fontSize: 12)),
+                          label: Text(v, style: montserratTextStyle(fontSize: 12)),
                           backgroundColor: themeColor.withOpacity(0.1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -326,11 +325,9 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text('Edit',
-                          style: GoogleFonts.montserrat(
-                            color: themeColor,
+                          style: montserratTextStyle(color: themeColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
+                            fontSize: 12,),
                         ),
                       ),
                     ),

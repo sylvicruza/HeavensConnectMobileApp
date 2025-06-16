@@ -123,10 +123,10 @@ class _RequestMembershipScreenState extends State<RequestMembershipScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Request Membership', style: GoogleFonts.montserrat(color: themeColor)),
+        title: Text('Request Membership', style: montserratTextStyle(color: themeColor)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -169,7 +169,7 @@ class _RequestMembershipScreenState extends State<RequestMembershipScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: InputBorder.none,
-        labelStyle: GoogleFonts.montserrat(),
+        labelStyle: montserratTextStyle(),
       ),
       validator: required ? (value) => value == null || value.isEmpty ? 'Required' : null : null,
     );
@@ -197,7 +197,7 @@ class _RequestMembershipScreenState extends State<RequestMembershipScreen> {
         if (isEmailVerified)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('✅ Email Verified', style: GoogleFonts.montserrat(color: Colors.green)),
+            child: Text('✅ Email Verified', style: montserratTextStyle(color: Colors.green)),
           ),
       ],
     );
@@ -234,7 +234,7 @@ class _RequestMembershipScreenState extends State<RequestMembershipScreen> {
         elevation: 4,
         backgroundColor: themeColor,
       ),
-      child: Text('Submit Request', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+      child: Text('Submit Request', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
     );
   }
 }

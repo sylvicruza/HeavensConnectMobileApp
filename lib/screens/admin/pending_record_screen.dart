@@ -35,12 +35,12 @@ class _PendingRecordsScreenState extends State<PendingRecordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pending Records', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Pending Records', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         elevation: 1,
       ),
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : records == null
@@ -63,8 +63,8 @@ class _PendingRecordsScreenState extends State<PendingRecordsScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
-        title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-        subtitle: Text("${items.length} record(s)", style: GoogleFonts.montserrat(color: Colors.grey[600])),
+        title: Text(title, style: montserratTextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text("${items.length} record(s)", style: montserratTextStyle(color: Colors.grey[600])),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
       ),

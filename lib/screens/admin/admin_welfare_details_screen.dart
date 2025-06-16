@@ -36,12 +36,12 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
     Color statusColor = _statusColor(request['status']);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         elevation: 0,
-        title: Text('Welfare Request', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text('Welfare Request', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -52,7 +52,7 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Request Details', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text('Request Details', style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   _buildStatusBadge(status, statusColor),
                 ],
               ),
@@ -91,9 +91,9 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(label, style: montserratTextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.montserrat(fontSize: 14), softWrap: true),
+          Text(value, style: montserratTextStyle(fontSize: 14), softWrap: true),
         ],
       ),
     );
@@ -110,7 +110,7 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
         children: [
           const Icon(Icons.attach_file, color: Colors.grey),
           const SizedBox(width: 6),
-          Text('View Attachment', style: GoogleFonts.montserrat(color: themeColor, decoration: TextDecoration.underline)),
+          Text('View Attachment', style: montserratTextStyle(color: themeColor, decoration: TextDecoration.underline)),
         ],
       ),
     );
@@ -126,11 +126,9 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
       ),
       child: Text(
         status,
-        style: GoogleFonts.montserrat(
-          color: color,
+        style: montserratTextStyle(color: color,
           fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
+          fontWeight: FontWeight.bold,),
       ),
     );
   }
@@ -178,7 +176,7 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
       child: Center(
         child: isProcessing && text.toLowerCase().contains('review') == false
             ? const CircularProgressIndicator(color: Colors.white)
-            : Text(text, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+            : Text(text, style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -188,18 +186,18 @@ class _AdminWelfareRequestDetailScreenState extends State<AdminWelfareRequestDet
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('${capitalize(status)} Request', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text('${capitalize(status)} Request', style: montserratTextStyle(fontWeight: FontWeight.bold)),
         content: TextField(
           maxLines: 4,
           decoration: const InputDecoration(labelText: 'Admin Note'),
           onChanged: (value) => note = value,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.montserrat())),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: montserratTextStyle())),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, note),
             style: ElevatedButton.styleFrom(backgroundColor: themeColor),
-            child: Text('Submit', style: GoogleFonts.montserrat(color: Colors.white)),
+            child: Text('Submit', style: montserratTextStyle(color: Colors.white)),
           ),
         ],
       ),

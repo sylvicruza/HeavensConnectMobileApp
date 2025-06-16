@@ -45,7 +45,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not open proof of payment', style: GoogleFonts.montserrat())),
+        SnackBar(content: Text('Could not open proof of payment', style: montserratTextStyle())),
       );
     }
   }
@@ -53,17 +53,17 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0.5,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Contribution Details', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text('Contribution Details', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : contribution == null
-          ? Center(child: Text('Contribution not found', style: GoogleFonts.montserrat()))
+          ? Center(child: Text('Contribution not found', style: montserratTextStyle()))
           : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -71,7 +71,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
           children: [
             _buildGlassHeader(),
             const SizedBox(height: 30),
-            Text('Proof of Payment', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Proof of Payment', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             contribution!['proof_of_payment'] != null ? _buildProofOfPaymentCard() : _buildNoProofCard(),
             const SizedBox(height: 30),
@@ -97,7 +97,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
         children: [
           Text(
             contribution!['member_name'] ?? '',
-            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            style: montserratTextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           _detailItem('Amount', '£${contribution!['amount']}'),
@@ -111,7 +111,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text('Reason: ${contribution!['rejection_reason']}',
-                  style: GoogleFonts.montserrat(color: Colors.redAccent, fontSize: 12)),
+                  style: montserratTextStyle(color: Colors.redAccent, fontSize: 12)),
             ),
         ],
       ),
@@ -124,8 +124,8 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-          Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500)),
+          Text(label, style: montserratTextStyle(color: Colors.white70, fontSize: 12)),
+          Text(value, style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -172,11 +172,9 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
         ),
         child: Text(
           status.toUpperCase(),
-          style: GoogleFonts.montserrat(
-            color: color,
+          style: montserratTextStyle(color: color,
             fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+            fontSize: 12,),
         ),
       ),
     );
@@ -208,7 +206,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             icon: const Icon(Icons.open_in_new, color: Colors.white),
-            label: Text('View Full Proof', style: GoogleFonts.montserrat(color: Colors.white)),
+            label: Text('View Full Proof', style: montserratTextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -222,7 +220,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
       ),
-      child: Text('No proof of payment provided.', style: GoogleFonts.montserrat(color: Colors.grey)),
+      child: Text('No proof of payment provided.', style: montserratTextStyle(color: Colors.grey)),
     );
   }
 
@@ -237,7 +235,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
             minimumSize: const Size.fromHeight(50),
           ),
           icon: const Icon(Icons.check, color: Colors.white),
-          label: Text('Verify Contribution', style: GoogleFonts.montserrat(color: Colors.white)),
+          label: Text('Verify Contribution', style: montserratTextStyle(color: Colors.white)),
         ),
         const SizedBox(height: 12),
         ElevatedButton.icon(
@@ -248,7 +246,7 @@ class _ContributionDetailScreenState extends State<ContributionDetailScreen> {
             minimumSize: const Size.fromHeight(50),
           ),
           icon: const Icon(Icons.close, color: Colors.white),
-          label: Text('Reject', style: GoogleFonts.montserrat(color: Colors.white)),
+          label: Text('Reject', style: montserratTextStyle(color: Colors.white)),
         ),
       ],
     );

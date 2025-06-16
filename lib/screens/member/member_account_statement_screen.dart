@@ -87,17 +87,15 @@ class _MemberAccountStatementScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text(
           'Request Statement',
-          style: GoogleFonts.montserrat(
-            color: themeColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: montserratTextStyle(color: themeColor,
+            fontWeight: FontWeight.bold,),
         ),
       ),
       body: Padding(
@@ -106,8 +104,7 @@ class _MemberAccountStatementScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Select Date Range',
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.w600, fontSize: 16)),
+                style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: _pickDateRange,
@@ -134,8 +131,7 @@ class _MemberAccountStatementScreenState
                         _fromDate != null && _toDate != null
                             ? '${_displayFormat.format(_fromDate!)} → ${_displayFormat.format(_toDate!)}'
                             : 'Tap to select date range',
-                        style: GoogleFonts.montserrat(
-                            fontSize: 15, color: Colors.grey[800]),
+                        style: montserratTextStyle(fontSize: 15, color: Colors.grey[800]),
                       ),
                     ),
                   ],
@@ -144,8 +140,7 @@ class _MemberAccountStatementScreenState
             ),
             const SizedBox(height: 30),
             Text('Format',
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.w600, fontSize: 16)),
+                style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -164,10 +159,8 @@ class _MemberAccountStatementScreenState
               child: Center(
                 child: Text(
                   'PDF',
-                  style: GoogleFonts.montserrat(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: montserratTextStyle(color: Colors.white,
+                    fontWeight: FontWeight.bold,),
                 ),
               ),
             ),
@@ -195,11 +188,9 @@ class _MemberAccountStatementScreenState
                   child: Center(
                     child: Text(
                       'Request Statement',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 16,
+                      style: montserratTextStyle(fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                        color: Colors.white,),
                     ),
                   ),
                 ),

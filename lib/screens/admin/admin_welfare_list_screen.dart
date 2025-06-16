@@ -98,7 +98,7 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
             children: [
               Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
               const SizedBox(height: 12),
-              Text('Filter Welfare Requests', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text('Filter Welfare Requests', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               _buildDropdown(statusOptions, selectedStatus, (value) => setState(() => selectedStatus = value), 'Status'),
               const SizedBox(height: 12),
@@ -116,7 +116,7 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text('Apply Filters', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -135,17 +135,17 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Welfare Requests', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
+        title: Text('Welfare Requests', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
         actions: [
           TextButton.icon(
             onPressed: settingsLoading ? null : _showFilterSheet,
             icon: const Icon(Icons.filter_list),
-            label: Text('Filter', style: GoogleFonts.montserrat(color: themeColor)),
+            label: Text('Filter', style: montserratTextStyle(color: themeColor)),
           ),
         ],
       ),
@@ -168,7 +168,7 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
           ),
           Expanded(
             child: welfareRequests.isEmpty
-                ? Center(child: Text('No welfare requests found', style: GoogleFonts.montserrat()))
+                ? Center(child: Text('No welfare requests found', style: montserratTextStyle()))
                 : ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: welfareRequests.length,
@@ -231,20 +231,20 @@ class _AdminWelfareRequestListScreenState extends State<AdminWelfareRequestListS
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
       child: ListTile(
-        title: Text(memberName, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text(memberName, style: montserratTextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text(category, style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w500)),
-            Text(amount, style: GoogleFonts.montserrat()),
-            Text('Requested: $requestedAt', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey)),
+            Text(category, style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.w500)),
+            Text(amount, style: montserratTextStyle()),
+            Text('Requested: $requestedAt', style: montserratTextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-          child: Text(capitalize(status), style: GoogleFonts.montserrat(color: statusColor, fontWeight: FontWeight.w600, fontSize: 12)),
+          child: Text(capitalize(status), style: montserratTextStyle(color: statusColor, fontWeight: FontWeight.w600, fontSize: 12)),
         ),
         onTap: () async {
           final result = await Navigator.pushNamed(context, '/adminWelfareRequestDetail', arguments: request);

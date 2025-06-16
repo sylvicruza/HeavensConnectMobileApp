@@ -27,14 +27,13 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
         title: Text('Profile and settings',
-            style: GoogleFonts.montserrat(
-                color: Colors.black, fontWeight: FontWeight.w600)),
+            style: montserratTextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
       ),
       body: Column(
         children: [
@@ -77,10 +76,8 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           alignment: Alignment.center,
           child: Text(
             title,
-            style: GoogleFonts.montserrat(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.w600,
-            ),
+            style: montserratTextStyle(color: isSelected ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.w600,),
           ),
         ),
       ),
@@ -127,8 +124,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
-            child: Text('Edit Profile', style: GoogleFonts.montserrat(
-                color: Colors.white, fontWeight: FontWeight.w600)),
+            child: Text('Edit Profile', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
           ),
 
         ],
@@ -185,12 +181,10 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: GoogleFonts.montserrat(
-                  color: Colors.black54, fontSize: 12)),
+              style: montserratTextStyle(color: Colors.black54, fontSize: 12)),
           const SizedBox(height: 6),
           Text(value,
-              style: GoogleFonts.montserrat(
-                  fontWeight: FontWeight.w600,
+              style: montserratTextStyle(fontWeight: FontWeight.w600,
                   fontSize: 14,
                   color: Colors.black87)),
         ],
@@ -203,8 +197,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w600, fontSize: 16)),
+            style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
         const SizedBox(height: 10),
         ...items,
       ],
@@ -224,8 +217,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         leading: Icon(icon, color: themeColor),
         title: Text(title,
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w500, color: Colors.black87)),
+            style: montserratTextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),
@@ -244,8 +236,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         secondary: Icon(icon, color: themeColor),
         title: Text(title,
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w500, color: Colors.black87)),
+            style: montserratTextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
         value: currentValue,
         onChanged: onChanged,
       ),

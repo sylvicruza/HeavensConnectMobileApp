@@ -100,10 +100,10 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        title: Text('Edit Request', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Edit Request', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
         elevation: 0,
       ),
@@ -143,7 +143,7 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
       value: selectedCategory,
       items: categories.map((e) {
         final label = e.replaceAll('_', ' ').toUpperCase();
-        return DropdownMenuItem(value: e, child: Text(label, style: GoogleFonts.montserrat()));
+        return DropdownMenuItem(value: e, child: Text(label, style: montserratTextStyle()));
       }).toList(),
       onChanged: (value) => setState(() => selectedCategory = value!),
       decoration: InputDecoration(
@@ -171,7 +171,7 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Attachment (optional)', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        Text('Attachment (optional)', style: montserratTextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -182,10 +182,10 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               icon: const Icon(Icons.upload_file, color: Colors.white),
-              label: Text('Upload', style: GoogleFonts.montserrat(color: Colors.white)),
+              label: Text('Upload', style: montserratTextStyle(color: Colors.white)),
             ),
             const SizedBox(width: 12),
-            if (attachment != null) Text('File Selected', style: GoogleFonts.montserrat(color: Colors.green)),
+            if (attachment != null) Text('File Selected', style: montserratTextStyle(color: Colors.green)),
           ],
         )
       ],
@@ -205,7 +205,7 @@ class _EditWelfareRequestScreenState extends State<EditWelfareRequestScreen> {
         child: Center(
           child: isSubmitting
               ? const CircularProgressIndicator(color: Colors.white)
-              : Text('Update Request', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+              : Text('Update Request', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
       ),
     );

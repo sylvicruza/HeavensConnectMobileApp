@@ -39,7 +39,7 @@ class ContributionBatchDetailScreen extends StatelessWidget {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not open proof of payment', style: GoogleFonts.montserrat())),
+        SnackBar(content: Text('Could not open proof of payment', style: montserratTextStyle())),
       );
     }
   }
@@ -47,10 +47,10 @@ class ContributionBatchDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        title: Text('Batch Details', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text('Batch Details', style: montserratTextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.appBarColor,
         iconTheme: IconThemeData(color: themeColor),
       ),
       body: Padding(
@@ -69,7 +69,7 @@ class ContributionBatchDetailScreen extends StatelessWidget {
               ),
               onPressed: () => _verifyBatch(context),
               icon: const Icon(Icons.verified, color: Colors.white),
-              label: Text('Verify All', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
+              label: Text('Verify All', style: montserratTextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ],
         ),
@@ -90,7 +90,7 @@ class ContributionBatchDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(batch['member_name'], style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(batch['member_name'], style: montserratTextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           _detailItem('Total Amount', '£${batch['total_amount']}'),
           _detailItem('Status', batch['status'].toString().capitalize()),
@@ -106,8 +106,8 @@ class ContributionBatchDetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-          Flexible(child: Text(value, textAlign: TextAlign.end, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500))),
+          Text(label, style: montserratTextStyle(color: Colors.white70, fontSize: 12)),
+          Flexible(child: Text(value, textAlign: TextAlign.end, style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.w500))),
         ],
       ),
     );
@@ -138,7 +138,7 @@ class ContributionBatchDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             icon: const Icon(Icons.open_in_new, color: Colors.white),
-            label: Text('View Full Proof', style: GoogleFonts.montserrat(color: Colors.white)),
+            label: Text('View Full Proof', style: montserratTextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -152,7 +152,7 @@ class ContributionBatchDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
       ),
-      child: Text('No proof of payment provided.', style: GoogleFonts.montserrat(color: Colors.grey)),
+      child: Text('No proof of payment provided.', style: montserratTextStyle(color: Colors.grey)),
     );
   }
 }

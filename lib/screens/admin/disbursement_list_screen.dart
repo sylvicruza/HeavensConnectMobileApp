@@ -82,7 +82,7 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
           children: [
             Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 12),
-            Text('Filter Disbursements', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Filter Disbursements', style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             _buildDropdown(paymentMethods, selectedPaymentMethod, (val) => setState(() => selectedPaymentMethod = val), 'Payment Method'),
             const SizedBox(height: 12),
@@ -101,7 +101,7 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
 
-              child: Text('Apply Filters', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text('Apply Filters', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
             ),
           ],
@@ -134,13 +134,13 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.only(bottom: 16),
       child: ListTile(
-        title: Text(recipient, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text(recipient, style: montserratTextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(category, style: GoogleFonts.montserrat(color: themeColor)),
+            Text(category, style: montserratTextStyle(color: themeColor)),
             Text('$amount via ${capitalize(method)}'),
-            Text('Date: $date', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey)),
+            Text('Date: $date', style: montserratTextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
         onTap: () => Navigator.pushNamed(context, '/adminDisbursementDetail', arguments: disb),
@@ -153,24 +153,24 @@ class _AdminDisbursementListScreenState extends State<AdminDisbursementListScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Disbursements', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+        title: Text('Disbursements', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
         actions: [
           TextButton.icon(
             onPressed: _showFilterSheet,
             icon: const Icon(Icons.filter_list),
-            label: Text('Filter', style: GoogleFonts.montserrat(color: themeColor)),
+            label: Text('Filter', style: montserratTextStyle(color: themeColor)),
           ),
         ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : disbursements.isEmpty
-          ? Center(child: Text('No disbursements found', style: GoogleFonts.montserrat()))
+          ? Center(child: Text('No disbursements found', style: montserratTextStyle()))
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: disbursements.length,

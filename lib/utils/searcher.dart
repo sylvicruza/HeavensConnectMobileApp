@@ -98,8 +98,7 @@ class AdminSearchDelegate extends SearchDelegate<String> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
           title,
-          style: GoogleFonts.montserrat(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
       ),
       ...items.map((item) {

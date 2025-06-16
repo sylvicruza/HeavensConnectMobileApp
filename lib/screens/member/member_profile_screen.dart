@@ -55,12 +55,12 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Profile and settings', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w600)),
+        title: Text('Profile and settings', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.w600)),
       ),
       body: Column(
         children: [
@@ -102,10 +102,8 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
           alignment: Alignment.center,
           child: Text(
             title,
-            style: GoogleFonts.montserrat(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.w600,
-            ),
+            style: montserratTextStyle(color: isSelected ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.w600,),
           ),
         ),
       ),
@@ -150,7 +148,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
-            child: Text('Edit Profile', style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+            child: Text('Edit Profile', style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
           ),
 
         ],
@@ -170,11 +168,11 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('Contact Support', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+                  title: Text('Contact Support', style: montserratTextStyle(fontWeight: FontWeight.bold)),
                   content: Text(
                     contactSupport ??
                         'Email: support@heavensconnect.org\nPhone: +44 123 456 7890\nWhatsApp: +44 987 654 3210',
-                    style: GoogleFonts.montserrat(),
+                    style: montserratTextStyle(),
                   ),
                   actions: [
                     TextButton(
@@ -202,8 +200,8 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
                 context: context,
                 builder: (context) => AlertDialog(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  title: Text('Logout', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
-                  content: Text('Are you sure you want to log out?', style: GoogleFonts.montserrat()),
+                  title: Text('Logout', style: montserratTextStyle(fontWeight: FontWeight.bold)),
+                  content: Text('Are you sure you want to log out?', style: montserratTextStyle()),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                     ElevatedButton(
@@ -212,7 +210,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
                         await _logout();
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: themeColor),
-                      child: Text('Logout', style: GoogleFonts.montserrat(color: Colors.white)),
+                      child: Text('Logout', style: montserratTextStyle(color: Colors.white)),
                     )
                   ],
                 ),
@@ -247,9 +245,9 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 12)),
+          Text(label, style: montserratTextStyle(color: Colors.black54, fontSize: 12)),
           const SizedBox(height: 6),
-          Text(value, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black87)),
+          Text(value, style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black87)),
         ],
       ),
     );
@@ -259,7 +257,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16)),
+        Text(title, style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
         const SizedBox(height: 10),
         ...items,
       ],
@@ -277,7 +275,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         leading: Icon(icon, color: themeColor),
-        title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.black87)),
+        title: Text(title, style: montserratTextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),
@@ -297,7 +295,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
         child: SwitchListTile(
           contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           secondary: Icon(icon, color: themeColor),
-          title: Text(title, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.black87)),
+          title: Text(title, style: montserratTextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
           value: currentValue,
           onChanged: onChanged,
         ),

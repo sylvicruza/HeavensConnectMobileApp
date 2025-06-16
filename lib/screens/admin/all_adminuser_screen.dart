@@ -46,19 +46,19 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
         leading: CircleAvatar(
           radius: 24,
           backgroundColor: themeColor.withOpacity(0.15),
-          child: Text(initials, style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.bold)),
+          child: Text(initials, style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
         ),
-        title: Text(admin['full_name'], style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        title: Text(admin['full_name'], style: montserratTextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
             Text('Email: ${admin['email'] ?? 'Not provided'}',
-                style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey[700])),
+                style: montserratTextStyle(fontSize: 12, color: Colors.grey[700])),
             Text('Phone: ${admin['phone_number']}',
-                style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey[700])),
+                style: montserratTextStyle(fontSize: 12, color: Colors.grey[700])),
             Text('Role: ${admin['role'].toUpperCase()}',
-                style: GoogleFonts.montserrat(fontSize: 12, color: themeColor)),
+                style: montserratTextStyle(fontSize: 12, color: themeColor)),
           ],
         ),
         trailing: PopupMenuButton<String>(
@@ -129,8 +129,8 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Users', style: GoogleFonts.montserrat(color: themeColor)),
-        backgroundColor: Colors.white,
+        title: Text('Admin Users', style: montserratTextStyle(color: themeColor)),
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
       ),
@@ -145,10 +145,10 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
                 size: 60, color: themeColor.withOpacity(0.4)),
             const SizedBox(height: 12),
             Text('No Admin Users Found',
-                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500)),
+                style: montserratTextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
             Text('Tap the + button to add an admin user.',
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.grey)),
+                style: montserratTextStyle(fontSize: 14, color: Colors.grey)),
           ],
         ),
       )

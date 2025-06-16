@@ -135,13 +135,12 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
         title: Text('New Disbursement',
-            style: GoogleFonts.montserrat(
-                color: themeColor, fontWeight: FontWeight.bold)),
+            style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.bold)),
         iconTheme: IconThemeData(color: themeColor),
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
       ),
       body: SingleChildScrollView(
@@ -243,7 +242,7 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
                           attachmentFile != null
                               ? attachmentFile!.path.split('/').last
                               : 'No file selected',
-                          style: GoogleFonts.montserrat(fontSize: 12))),
+                          style: montserratTextStyle(fontSize: 12))),
                 ],
               )),
 
@@ -263,11 +262,9 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
       padding: const EdgeInsets.only(top: 20, bottom: 8),
       child: Text(
         title.toUpperCase(),
-        style: GoogleFonts.montserrat(
-          fontSize: 12,
+        style: montserratTextStyle(fontSize: 12,
           fontWeight: FontWeight.bold,
-          color: Colors.grey[600],
-        ),
+          color: Colors.grey[600],),
       ),
     );
   }
@@ -325,8 +322,7 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Summary',
-            style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.bold,
+            style: montserratTextStyle(fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: themeColor)),
         const SizedBox(height: 8),
@@ -361,8 +357,7 @@ class _AddDisbursementScreenState extends State<AddDisbursementScreen> {
           child: Center(
             child: Text(
               'Submit Disbursement',
-              style: GoogleFonts.montserrat(
-                  color: Colors.white,
+              style: montserratTextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
             ),

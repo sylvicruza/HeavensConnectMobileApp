@@ -69,10 +69,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       // In your AppBar
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 0,
         title: Row(
           children: [
@@ -90,8 +90,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 memberProfile?['full_name'] != null
                     ? memberProfile!['full_name'][0].toUpperCase()
                     : '?',
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold,
+                style: montserratTextStyle(fontWeight: FontWeight.bold,
                     fontSize: 20,
                     color: themeColor),
               )
@@ -105,18 +104,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 children: [
                   Text(
                     _getGreeting(),
-                    style: GoogleFonts.montserrat(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: montserratTextStyle(fontSize: 12,
+                      color: Colors.grey[600],),
                   ),
                   Text(
                     memberProfile?['full_name'] ?? '',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 14,
+                    style: montserratTextStyle(fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                      color: Colors.black,),
                     overflow: TextOverflow.ellipsis, // 👈 optional
                     maxLines: 1, // 👈 optional
                   ),
@@ -239,8 +234,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     /// Name
                     Text(
                       name,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 16,
+                      style: montserratTextStyle(fontSize: 16,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
@@ -249,16 +243,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     /// Masked card number + Member ID
                     Text(
                       "Member ID",
-                      style: GoogleFonts.montserrat(
-                          fontSize: 13,
+                      style: montserratTextStyle(fontSize: 13,
                           color: Colors.white70,
                           letterSpacing: 4),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       memberId,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 16, color: Colors.white),
+                      style: montserratTextStyle(fontSize: 16, color: Colors.white),
                     ),
 
                     const Spacer(),
@@ -271,14 +263,12 @@ class _MemberDashboardState extends State<MemberDashboard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Welfare Balance",
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.white70, fontSize: 12)),
+                                style: montserratTextStyle(color: Colors.white70, fontSize: 12)),
                             Text(
                               showBalance
                                   ? "£${balance.toStringAsFixed(2)}"
                                   : "£••••",
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 26,
+                              style: montserratTextStyle(fontSize: 26,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -288,12 +278,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text("Reg. Date",
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.white70, fontSize: 12)),
+                                style: montserratTextStyle(color: Colors.white70, fontSize: 12)),
                             Text(
                               regDate,
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 14, color: Colors.white),
+                              style: montserratTextStyle(fontSize: 14, color: Colors.white),
                             ),
                           ],
                         ),
@@ -323,7 +311,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick Actions', style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text('Quick Actions', style: montserratTextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -363,7 +351,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
           children: [
             Icon(icon, color: themeColor, size: 28),
             const SizedBox(height: 6),
-            Text(label, style: GoogleFonts.montserrat(fontSize: 12)),
+            Text(label, style: montserratTextStyle(fontSize: 12)),
           ],
         ),
       ),
@@ -378,10 +366,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Recent Contributions', style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Recent Contributions', style: montserratTextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () => Navigator.pushNamed(context, '/memberContributionList'),
-              child: Text('See All', style: GoogleFonts.montserrat(color: themeColor, fontWeight: FontWeight.w500)),
+              child: Text('See All', style: montserratTextStyle(color: themeColor, fontWeight: FontWeight.w500)),
             ),
           ],
         ),
@@ -389,7 +377,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
         SizedBox(
           height: 120,
           child: contributions.isEmpty
-              ? Center(child: Text('No contributions yet.', style: GoogleFonts.montserrat(color: Colors.grey)))
+              ? Center(child: Text('No contributions yet.', style: montserratTextStyle(color: Colors.grey)))
               : ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: contributions.length.clamp(0, 5),
@@ -445,14 +433,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(amount, style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold, color: themeColor)),
+          Text(amount, style: montserratTextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: themeColor)),
           const SizedBox(height: 6),
-          Text(date, style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey)),
+          Text(date, style: montserratTextStyle(fontSize: 12, color: Colors.grey)),
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(color: badgeColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-            child: Text(status, style: GoogleFonts.montserrat(color: badgeColor, fontWeight: FontWeight.w600, fontSize: 12)),
+            child: Text(status, style: montserratTextStyle(color: badgeColor, fontWeight: FontWeight.w600, fontSize: 12)),
           )
         ],
       ),

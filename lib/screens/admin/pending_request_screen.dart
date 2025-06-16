@@ -87,17 +87,17 @@ class _PendingRequestsScreenState extends State<PendingRequestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: AppTheme.lightBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
         elevation: 1,
         iconTheme: IconThemeData(color: themeColor),
-        title: Text('Pending Membership', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: themeColor)),
+        title: Text('Pending Membership', style: montserratTextStyle(fontWeight: FontWeight.bold, color: themeColor)),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : pendingRequests.isEmpty
-          ? Center(child: Text('No pending membership request', style: GoogleFonts.montserrat()))
+          ? Center(child: Text('No pending membership request', style: montserratTextStyle()))
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: pendingRequests.length,
@@ -127,9 +127,9 @@ class _PendingRequestsScreenState extends State<PendingRequestsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(fullName, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 15)),
+                      Text(fullName, style: montserratTextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                       const SizedBox(height: 4),
-                      Text(phoneNumber, style: GoogleFonts.montserrat(fontSize: 12, color: Colors.grey[600])),
+                      Text(phoneNumber, style: montserratTextStyle(fontSize: 12, color: Colors.grey[600])),
                     ],
                   ),
                 ),
@@ -170,7 +170,7 @@ class _PendingRequestsScreenState extends State<PendingRequestsScreen> {
         child: Center(
           child: Text(
             name.isNotEmpty ? name[0].toUpperCase() : '',
-            style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+            style: montserratTextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ),
       );
@@ -184,9 +184,9 @@ class _PendingRequestsScreenState extends State<PendingRequestsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         side: BorderSide(color: color, width: 1.5),
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.appBarColor,
       ),
-      child: Text(label, style: GoogleFonts.montserrat(color: color, fontWeight: FontWeight.w600, fontSize: 13)),
+      child: Text(label, style: montserratTextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13)),
     );
   }
 }
