@@ -11,7 +11,7 @@ class AuthService {
   final Logger logger = Logger();
  //final String baseUrl = 'http://192.168.1.174:8085';  // Use base URL
  final String baseUrl = 'https://heavensconnect.onrender.com';  // Use base URL
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   /// Login
   Future<bool> login(String username, String password) async {
     try {
@@ -1343,6 +1343,44 @@ class AuthService {
     );
     return response.statusCode == 200;
   }
+
+  Future<bool> importLegacyContributions(List<Map<String, dynamic>> contributions) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/contributions/import_legacy/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'contributions': contributions}),
+    );
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> importLegacyContributionsExcel(File file) async {
+    final uri = Uri.parse('$baseUrl/api/contributions/import-legacy-excel/');
+    final request = http.MultipartRequest('POST', uri);
+
+    final token = await getToken();
+    request.headers['Authorization'] = 'Bearer $token';
+
+    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      final respStr = await response.stream.bytesToString();
+      print('Import failed: $respStr');
+      return false;
+    }
+  }
+
+
+
 
 
 
