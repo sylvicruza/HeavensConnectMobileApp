@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_theme.dart';
-import '../screens/member/member_profile_screen.dart';
+import '../screens/member/memberusers/member_profile_screen.dart';
 
 class MemberBottomNavBar extends StatefulWidget {
   final int selectedIndex;
