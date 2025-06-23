@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/admin/admin_profile_screen.dart';
-import '../screens/notification_screen.dart';
+import '../screens/admin/adminusers/admin_profile_screen.dart';
 import '../services/auth_service.dart';
 import '../utils/app_dialog.dart';
 import '../utils/app_theme.dart';

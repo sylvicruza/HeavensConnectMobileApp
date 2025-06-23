@@ -48,7 +48,7 @@ class AppDialog extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (_) => AppDialog(
-        animationPath: 'assets/animations/loading.json',
+        animationPath: 'assets/animations/volunteer_heart_icon.json',
         title: message,
       ),
     );

@@ -13,7 +13,8 @@ extension ContributionService on AuthService {
     String? paymentMethod,
     int? month,
     int? year,
-    String? search,  // <-- Add search here
+    String? search,
+    String? source, // <-- Add source parameter
   }) async {
     final token = await getToken();
     if (token == null) return null;
@@ -24,7 +25,8 @@ extension ContributionService on AuthService {
     if (paymentMethod != null) queryParams['payment_method'] = paymentMethod;
     if (month != null) queryParams['month'] = month.toString();
     if (year != null) queryParams['year'] = year.toString();
-    if (search != null) queryParams['search'] = search;  // <-- Add search filter here
+    if (search != null) queryParams['search'] = search;
+    if (source != null) queryParams['source'] = source; // <-- Inject source filter
 
     final uri = Uri.parse('$baseUrl/api/contributions/').replace(queryParameters: queryParams);
     final response = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
@@ -40,13 +42,16 @@ extension ContributionService on AuthService {
           paymentMethod: paymentMethod,
           month: month,
           year: year,
-          search: search,  // <-- Pass search on retry too
+          search: search,
+          source: source, // <-- Retry with source
         );
       }
     }
+
     logger.e('Failed to fetch contributions: ${response.body}');
     return null;
   }
+
 
 
   /// Add Contribution (Admin)
