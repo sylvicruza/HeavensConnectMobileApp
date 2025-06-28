@@ -137,7 +137,7 @@ class _ImportLegacyContributionsScreenState extends State<ImportLegacyContributi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Import Legacy Contributions', style: montserratTextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text('Import Contributions', style: montserratTextStyle(fontWeight: FontWeight.bold, color: AppTheme.themeColor)),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
